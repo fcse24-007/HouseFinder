@@ -14,6 +14,9 @@
         <action
             android:id="@+id/action_loginFragment_to_listingListFragment"
             app:destination="@id/listingListFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_landlordDashboardFragment"
+            app:destination="@id/landlordDashboardFragment" />
     </fragment>
 
     <fragment
@@ -23,12 +26,16 @@
         <action
             android:id="@+id/action_registerFragment_to_listingListFragment"
             app:destination="@id/listingListFragment" />
+        <action
+            android:id="@+id/action_registerFragment_to_landlordDashboardFragment"
+            app:destination="@id/landlordDashboardFragment" />
     </fragment>
 
+    <!-- Student dashboard (browse listings) -->
     <fragment
         android:id="@+id/listingListFragment"
         android:name="com.example.housefinder.ui.listings.ListingListFragment"
-        android:label="Listings">
+        android:label="Browse Listings">
         <action
             android:id="@+id/action_listingListFragment_to_listingDetailFragment"
             app:destination="@id/listingDetailFragment" />
@@ -41,6 +48,27 @@
             app:popUpTo="@id/nav_graph"
             app:popUpToInclusive="true" />
     </fragment>
+
+    <!-- Landlord dashboard (own listings only) -->
+    <fragment
+        android:id="@+id/landlordDashboardFragment"
+        android:name="com.example.housefinder.ui.landlord.LandlordDashboardFragment"
+        android:label="My Properties">
+        <action
+            android:id="@+id/action_landlordDashboardFragment_to_addListingFragment"
+            app:destination="@id/addListingFragment" />
+        <action
+            android:id="@+id/action_landlordDashboardFragment_to_loginFragment"
+            app:destination="@id/loginFragment"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <!-- Add listing form (landlord only) -->
+    <fragment
+        android:id="@+id/addListingFragment"
+        android:name="com.example.housefinder.ui.landlord.AddListingFragment"
+        android:label="Add Listing" />
 
     <fragment
         android:id="@+id/listingDetailFragment"
@@ -86,4 +114,3 @@
     </fragment>
 
 </navigation>
-

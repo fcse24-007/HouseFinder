@@ -1,22 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="12dp">
+    android:background="@color/background_light"
+    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/txt_welcome"
-        android:layout_width="wrap_content"
+    <!-- Consistent top app bar -->
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/primary"
+        android:elevation="4dp"
+        app:title="@string/student_dashboard_title"
+        app:titleTextColor="@color/white" />
+
+    <!-- Welcome row -->
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:textSize="18sp"
-        android:text="Welcome" />
+        android:background="@color/surface_light"
+        android:orientation="horizontal"
+        android:paddingStart="16dp"
+        android:paddingTop="12dp"
+        android:paddingEnd="8dp"
+        android:paddingBottom="12dp"
+        android:elevation="2dp">
 
+        <TextView
+            android:id="@+id/txt_welcome"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="@color/text_primary"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/btn_logout"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_logout"
+            android:textColor="@color/primary"
+            android:textSize="13sp" />
+    </LinearLayout>
+
+    <!-- Filter bar -->
     <HorizontalScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp">
+        android:layout_marginTop="8dp"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -25,100 +62,133 @@
 
             <EditText
                 android:id="@+id/edt_min_price"
-                android:layout_width="120dp"
+                android:layout_width="108dp"
                 android:layout_height="wrap_content"
-                android:hint="Min price"
-                android:inputType="numberDecimal" />
+                android:background="@drawable/bg_auth_input"
+                android:hint="@string/filter_min_price"
+                android:inputType="numberDecimal"
+                android:padding="10dp"
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/text_secondary"
+                android:textSize="13sp" />
 
             <EditText
                 android:id="@+id/edt_max_price"
-                android:layout_width="120dp"
+                android:layout_width="108dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:hint="Max price"
-                android:inputType="numberDecimal" />
+                android:background="@drawable/bg_auth_input"
+                android:hint="@string/filter_max_price"
+                android:inputType="numberDecimal"
+                android:padding="10dp"
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/text_secondary"
+                android:textSize="13sp" />
 
             <EditText
                 android:id="@+id/edt_location"
-                android:layout_width="140dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:hint="Location" />
-
-            <EditText
-                android:id="@+id/edt_type"
                 android:layout_width="120dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:hint="Type" />
+                android:background="@drawable/bg_auth_input"
+                android:hint="@string/filter_location"
+                android:padding="10dp"
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/text_secondary"
+                android:textSize="13sp" />
+
+            <EditText
+                android:id="@+id/edt_type"
+                android:layout_width="108dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/bg_auth_input"
+                android:hint="@string/filter_type"
+                android:padding="10dp"
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/text_secondary"
+                android:textSize="13sp" />
 
             <EditText
                 android:id="@+id/edt_availability_date"
-                android:layout_width="160dp"
+                android:layout_width="148dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:hint="Available by YYYY-MM-DD" />
+                android:background="@drawable/bg_auth_input"
+                android:hint="@string/filter_availability_date"
+                android:padding="10dp"
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/text_secondary"
+                android:textSize="13sp" />
         </LinearLayout>
     </HorizontalScrollView>
 
+    <!-- Filter action row -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
         android:orientation="horizontal"
-        android:layout_marginTop="8dp">
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp">
 
         <Button
             android:id="@+id/btn_apply_filters"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:layout_weight="1"
-            android:text="Apply" />
+            android:background="@drawable/bg_auth_button_primary_soft"
+            android:text="@string/btn_apply"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="13sp" />
 
         <Button
             android:id="@+id/btn_clear_filters"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_height="40dp"
             android:layout_marginStart="8dp"
-            android:text="Clear" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="8dp">
+            android:layout_weight="1"
+            android:background="@drawable/bg_role_pill_unselected"
+            android:text="@string/btn_clear"
+            android:textAllCaps="false"
+            android:textColor="@color/text_primary"
+            android:textSize="13sp" />
 
         <Button
             android:id="@+id/btn_preferences"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginStart="8dp"
             android:layout_weight="1"
-            android:text="Preferences" />
+            android:background="@drawable/bg_role_pill_unselected"
+            android:text="@string/btn_preferences"
+            android:textAllCaps="false"
+            android:textColor="@color/text_primary"
+            android:textSize="13sp" />
 
         <Button
             android:id="@+id/btn_check_alerts"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_height="40dp"
             android:layout_marginStart="8dp"
-            android:text="Check alerts" />
-
-        <Button
-            android:id="@+id/btn_logout"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_marginStart="8dp"
-            android:text="Logout" />
+            android:background="@drawable/bg_role_pill_unselected"
+            android:text="@string/btn_check_alerts"
+            android:textAllCaps="false"
+            android:textColor="@color/text_primary"
+            android:textSize="13sp" />
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_listings"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginTop="8dp"
         android:layout_weight="1"
-        android:layout_marginTop="8dp" />
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:clipToPadding="false" />
 
 </LinearLayout>
 

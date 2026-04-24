@@ -1,7 +1,30 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+    <!-- Base application theme (dark). -->
     <style name="Base.Theme.HouseFinder" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+        <!-- Primary: lighter clay for dark mode -->
+        <item name="colorPrimary">@color/primary_dark</item>
+        <item name="colorOnPrimary">@color/on_primary_dark</item>
+        <!-- Secondary -->
+        <item name="colorSecondary">@color/secondary_dark</item>
+        <item name="colorOnSecondary">@color/on_secondary_dark</item>
+        <!-- Background and surface -->
+        <item name="android:colorBackground">@color/background_dark</item>
+        <item name="colorSurface">@color/surface_dark</item>
+        <item name="colorOnSurface">@color/on_background_dark</item>
+        <item name="colorOnBackground">@color/on_background_dark</item>
+        <!-- Error -->
+        <item name="colorError">@color/error_dark</item>
+        <!-- Text -->
+        <item name="android:textColorPrimary">@color/on_background_dark</item>
+        <!-- Toolbar style -->
+        <item name="toolbarStyle">@style/Widget.HouseFinder.Toolbar.Dark</item>
+    </style>
+
+    <!-- Dark toolbar style uses darker primary -->
+    <style name="Widget.HouseFinder.Toolbar.Dark" parent="Widget.Material3.Toolbar">
+        <item name="android:background">@color/primary_dark</item>
+        <item name="titleTextColor">@color/on_primary_dark</item>
+        <item name="subtitleTextColor">@color/on_primary_dark</item>
+        <item name="navigationIconTint">@color/on_primary_dark</item>
     </style>
 </resources>

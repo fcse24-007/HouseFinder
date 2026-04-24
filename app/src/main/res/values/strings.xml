@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">HouseFinder</string>
+    <string name="app_brand_name">House Finder</string>
+    <string name="app_motto">Find Your House</string>
+    <string name="auth_subtitle">Student Nest Finder Gaborone</string>
+    <string name="role_student">Student</string>
+    <string name="role_provider">Landlord</string>
+    <string name="login_screen_title">Login</string>
+    <string name="register_screen_title">Sign Up</string>
+    <string name="login_title">HouseFinder Login</string>
+    <string name="login_email_hint">Student or provider email</string>
+    <string name="password_hint">Password</string>
+    <string name="login_cta">Login</string>
+    <string name="create_account_cta">Create account</string>
+    <string name="new_here_create_account">New here? Create an account</string>
+    <string name="already_have_account_login">Already have an account? Login</string>
+    <string name="register_title">Create Account</string>
+    <string name="full_name_hint">Full name</string>
+    <string name="email_hint">Email</string>
+    <string name="register_password_hint">Password (min 6 chars)</string>
+    <string name="student_id_hint">Student ID (required for students)</string>
+    <string name="welcome_user">Welcome, %1$s</string>
+    <string name="location_value">Location: %1$s</string>
+    <string name="type_value">Type: %1$s</string>
+    <string name="availability_from_value">Available from: %1$s</string>
+    <string name="rent_deposit_value">Rent: BWP %1$d | Deposit: BWP %2$d</string>
+    <string name="deposit_to_pay_value">Deposit to pay: BWP %1$d</string>
+    <string name="reservation_reference_value">Reference: %1$s</string>
+</resources>

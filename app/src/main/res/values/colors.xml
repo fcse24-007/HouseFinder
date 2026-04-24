@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Gaborone Edition Palette -->
+
+    <!-- Primary: Gaborone Clay – buttons, active states, key accents -->
+    <color name="primary">#B84A2D</color>
+
+    <!-- Secondary: Mokolodi Green – FAB, success, verification badge, chips -->
+    <color name="secondary">#2F6B4A</color>
+
+    <!-- Tertiary: Savanna Gold – price tags, "new" badges, rating stars -->
+    <color name="accent">#D49A2A</color>
+
+    <!-- Surfaces & backgrounds -->
+    <!-- Soft Kalahari Sand – main background -->
+    <color name="background_light">#F9F6F0</color>
+    <!-- Ivory White – cards, sheets, dialogs -->
+    <color name="surface_light">#FFFFFF</color>
+
+    <!-- Text -->
+    <!-- Charcoal Dusk – primary text (neutral alias kept for XML themes) -->
+    <color name="neutral">#2E2E2E</color>
+    <color name="text_primary">#2E2E2E</color>
+    <!-- Stone Gray – secondary text, captions, icons -->
+    <color name="text_secondary">#6B5E54</color>
+
+    <!-- Utility -->
+    <!-- Dusty Border – subtle borders and separators -->
+    <color name="border_light">#E2DCD5</color>
+    <!-- Success = Mokolodi Green -->
+    <color name="success">#2F6B4A</color>
+    <!-- Warning = Savanna Gold -->
+    <color name="warning">#D49A2A</color>
+    <!-- Acacia Thorn Red – alerts and error messages -->
+    <color name="error">#C13C3C</color>
+
+    <!-- Legacy (kept for compatibility) -->
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- Dark theme variants (used by values-night/themes.xml) -->
+    <color name="primary_dark">#E8896E</color>
+    <color name="on_primary_dark">#5C1900</color>
+    <color name="secondary_dark">#74B896</color>
+    <color name="on_secondary_dark">#003920</color>
+    <color name="background_dark">#1C1512</color>
+    <color name="surface_dark">#2A2319</color>
+    <color name="on_background_dark">#EDE0D4</color>
+    <color name="error_dark">#FFB4A9</color>
+</resources>

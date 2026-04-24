@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/loginFragment">
+
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.example.housefinder.ui.auth.LoginFragment"
+        android:label="Login">
+        <action
+            android:id="@+id/action_loginFragment_to_registerFragment"
+            app:destination="@id/registerFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_listingListFragment"
+            app:destination="@id/listingListFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/registerFragment"
+        android:name="com.example.housefinder.ui.auth.RegisterFragment"
+        android:label="Create Account">
+        <action
+            android:id="@+id/action_registerFragment_to_listingListFragment"
+            app:destination="@id/listingListFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/listingListFragment"
+        android:name="com.example.housefinder.ui.listings.ListingListFragment"
+        android:label="Listings">
+        <action
+            android:id="@+id/action_listingListFragment_to_listingDetailFragment"
+            app:destination="@id/listingDetailFragment" />
+        <action
+            android:id="@+id/action_listingListFragment_to_preferencesFragment"
+            app:destination="@id/preferencesFragment" />
+        <action
+            android:id="@+id/action_listingListFragment_to_loginFragment"
+            app:destination="@id/loginFragment"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/listingDetailFragment"
+        android:name="com.example.housefinder.ui.listings.ListingDetailFragment"
+        android:label="Listing Detail">
+        <argument
+            android:name="listingId"
+            app:argType="integer" />
+        <action
+            android:id="@+id/action_listingDetailFragment_to_paymentFragment"
+            app:destination="@id/paymentFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/preferencesFragment"
+        android:name="com.example.housefinder.ui.preferences.PreferencesFragment"
+        android:label="Preferences" />
+
+    <fragment
+        android:id="@+id/paymentFragment"
+        android:name="com.example.housefinder.ui.payment.PaymentFragment"
+        android:label="Deposit Payment">
+        <argument
+            android:name="listingId"
+            app:argType="integer" />
+        <action
+            android:id="@+id/action_paymentFragment_to_reservationSuccessFragment"
+            app:destination="@id/reservationSuccessFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/reservationSuccessFragment"
+        android:name="com.example.housefinder.ui.reservation.ReservationSuccessFragment"
+        android:label="Reservation Confirmed">
+        <argument
+            android:name="referenceNumber"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_reservationSuccessFragment_to_listingListFragment"
+            app:destination="@id/listingListFragment"
+            app:popUpTo="@id/listingListFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+</navigation>
+

@@ -15,7 +15,16 @@ import com.example.housefinder.ui.common.SessionManager
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 
+import androidx.fragment.app.viewModels
+import com.example.housefinder.viewmodel.PreferencesViewModel
+import kotlinx.coroutines.flow.collectLatest
+
+import dagger.hilt.android.AndroidEntryPoint
+
+@AndroidEntryPoint
 class PreferencesFragment : Fragment(R.layout.fragment_preferences) {
+
+    private val viewModel: PreferencesViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -33,36 +42,38 @@ class PreferencesFragment : Fragment(R.layout.fragment_preferences) {
         val typeInput = view.findViewById<EditText>(R.id.edt_type)
         val notificationsSwitch = view.findViewById<SwitchCompat>(R.id.switch_notifications)
         val saveButton = view.findViewById<Button>(R.id.btn_save_preferences)
+        val toolbar = view.findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
 
-        lifecycleScope.launch {
-            val pref = AppDatabase.getInstance(requireContext())
-                .userPreferenceDao()
-                .getForUser(userId)
-                .firstOrNull()
+        toolbar.setNavigationOnClickListener {
+            (activity as? com.example.housefinder.MainActivity)?.findViewById<androidx.drawerlayout.widget.DrawerLayout>(R.id.drawer_layout)?.openDrawer(androidx.core.view.GravityCompat.START)
+        }
 
-            if (pref != null) {
-                minPriceInput.setText(pref.minPrice?.toString().orEmpty())
-                maxPriceInput.setText(pref.maxPrice?.toString().orEmpty())
-                locationInput.setText(pref.location.orEmpty())
-                typeInput.setText(pref.type.orEmpty())
-                notificationsSwitch.isChecked = pref.notificationsEnabled
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.preference.collectLatest { pref ->
+                if (pref != null) {
+                    minPriceInput.setText(pref.minPrice?.toString().orEmpty())
+                    maxPriceInput.setText(pref.maxPrice?.toString().orEmpty())
+                    locationInput.setText(pref.location.orEmpty())
+                    typeInput.setText(pref.type.orEmpty())
+                    notificationsSwitch.isChecked = pref.notificationsEnabled
+                }
             }
         }
 
-        saveButton.setOnClickListener {
-            lifecycleScope.launch {
-                val preference = UserPreference(
-                    userId = userId,
-                    minPrice = minPriceInput.text.toString().trim().toFloatOrNull(),
-                    maxPrice = maxPriceInput.text.toString().trim().toFloatOrNull(),
-                    location = locationInput.text.toString().trim().takeIf { it.isNotBlank() },
-                    type = typeInput.text.toString().trim().uppercase().takeIf { it.isNotBlank() },
-                    notificationsEnabled = notificationsSwitch.isChecked
-                )
+        viewModel.loadPreference(userId)
 
-                AppDatabase.getInstance(requireContext()).userPreferenceDao().upsert(preference)
-                Toast.makeText(requireContext(), "Preferences saved", Toast.LENGTH_SHORT).show()
-            }
+        saveButton.setOnClickListener {
+            val preference = UserPreference(
+                userId = userId,
+                minPrice = minPriceInput.text.toString().trim().toFloatOrNull(),
+                maxPrice = maxPriceInput.text.toString().trim().toFloatOrNull(),
+                location = locationInput.text.toString().trim().takeIf { it.isNotBlank() },
+                type = typeInput.text.toString().trim().uppercase().takeIf { it.isNotBlank() },
+                notificationsEnabled = notificationsSwitch.isChecked
+            )
+
+            viewModel.savePreference(preference)
+            Toast.makeText(requireContext(), "Preferences saved", Toast.LENGTH_SHORT).show()
         }
     }
 }

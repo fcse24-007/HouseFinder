@@ -1,9 +1,11 @@
 package com.example.housefinder.db.entities
 
+import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import androidx.room.Relation
 
 @Entity(
     tableName = "users",
@@ -181,4 +183,15 @@ data class ProviderReservationDetails(
     val studentIdentifier: String,
     val studentName: String
 )
+
+data class ListingWithImage(
+    @Embedded val listing: Listing,
+    @Relation(
+        parentColumn = "id",
+        entityColumn = "listingId"
+    )
+    val images: List<ListingImage>
+) {
+    val coverImagePath: String? get() = images.sortedBy { it.sortOrder }.firstOrNull()?.imagePath
+}
 

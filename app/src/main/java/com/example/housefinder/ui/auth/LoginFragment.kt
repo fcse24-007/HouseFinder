@@ -15,57 +15,47 @@ import com.example.housefinder.ui.common.SessionManager
 import kotlinx.coroutines.launch
 import org.mindrot.jbcrypt.BCrypt
 
+import androidx.fragment.app.viewModels
+import com.example.housefinder.viewmodel.LoginViewModel
+
+import dagger.hilt.android.AndroidEntryPoint
+
+@AndroidEntryPoint
 class LoginFragment : Fragment(R.layout.fragment_login) {
+
+    private val viewModel: LoginViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val emailInput = view.findViewById<EditText>(R.id.edt_email)
-        val passwordInput = view.findViewById<EditText>(R.id.edt_password)
-        val studentRoleButton = view.findViewById<Button>(R.id.btn_role_student_login)
-        val providerRoleButton = view.findViewById<Button>(R.id.btn_role_provider_login)
+        val emailInput = view.findViewById<EditText>(R.id.edt_login_email)
+        val passwordInput = view.findViewById<EditText>(R.id.edt_login_password)
         val loginButton = view.findViewById<Button>(R.id.btn_login)
-        val createAccountButton = view.findViewById<Button>(R.id.btn_create_account)
-
-        fun updateRoleVisuals(studentSelected: Boolean) {
-            studentRoleButton.setBackgroundResource(
-                if (studentSelected) R.drawable.bg_role_pill_selected else R.drawable.bg_role_pill_unselected
-            )
-            providerRoleButton.setBackgroundResource(
-                if (studentSelected) R.drawable.bg_role_pill_unselected else R.drawable.bg_role_pill_selected
-            )
-            studentRoleButton.setTextColor(
-                ContextCompat.getColor(requireContext(), if (studentSelected) R.color.white else R.color.text_primary)
-            )
-            providerRoleButton.setTextColor(
-                ContextCompat.getColor(requireContext(), if (studentSelected) R.color.text_primary else R.color.white)
-            )
-        }
-
-        updateRoleVisuals(studentSelected = true)
-        studentRoleButton.setOnClickListener { updateRoleVisuals(studentSelected = true) }
-        providerRoleButton.setOnClickListener { updateRoleVisuals(studentSelected = false) }
+        val createAccountButton = view.findViewById<View>(R.id.btn_go_register)
 
         loginButton.setOnClickListener {
             val email = emailInput.text.toString().trim()
             val password = passwordInput.text.toString().trim()
+            viewModel.login(email, password)
+        }
 
-            if (email.isBlank() || password.isBlank()) {
-                Toast.makeText(requireContext(), "Enter email and password", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-
-            lifecycleScope.launch {
-                val db = AppDatabase.getInstance(requireContext())
-                val user = db.userDao().getByEmail(email)
-
-                if (user == null || !BCrypt.checkpw(password, user.passwordHash)) {
-                    Toast.makeText(requireContext(), "Invalid credentials", Toast.LENGTH_SHORT).show()
-                    return@launch
+        lifecycleScope.launch {
+            viewModel.loginResult.collect { result ->
+                when (result) {
+                    is LoginViewModel.LoginResult.Success -> {
+                        val user = result.user
+                        SessionManager(requireContext()).saveSession(user.id, user.role, user.name)
+                        
+                        // Navigate based on user role
+                        when (user.role) {
+                            "PROVIDER" -> findNavController().navigate(R.id.action_loginFragment_to_providerDashboardFragment)
+                            else -> findNavController().navigate(R.id.action_loginFragment_to_listingListFragment)
+                        }
+                    }
+                    is LoginViewModel.LoginResult.Error -> {
+                        Toast.makeText(requireContext(), result.message, Toast.LENGTH_SHORT).show()
+                    }
                 }
-
-                SessionManager(requireContext()).saveSession(user.id, user.role, user.name)
-                findNavController().navigate(R.id.action_loginFragment_to_listingListFragment)
             }
         }
 

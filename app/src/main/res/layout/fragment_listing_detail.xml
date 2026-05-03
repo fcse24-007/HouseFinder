@@ -1,96 +1,158 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_light"
-    android:fillViewport="true">
+    android:background="@color/register_cream"
+    android:orientation="vertical">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="20dp">
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
-        <TextView
-            android:id="@+id/txt_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textStyle="bold"
-            android:textSize="22sp" />
-
-        <com.google.android.material.card.MaterialCardView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            app:cardBackgroundColor="@color/surface_light"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="1dp"
-            app:strokeColor="@color/border_light"
-            app:strokeWidth="1dp">
+            android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/txt_description"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="14dp"
-                android:textColor="@color/text_secondary" />
-        </com.google.android.material.card.MaterialCardView>
+                android:layout_height="250dp">
 
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            app:cardBackgroundColor="@color/surface_light"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="1dp"
-            app:strokeColor="@color/border_light"
-            app:strokeWidth="1dp">
+                <ImageView
+                    android:id="@+id/img_detail_cover"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#EEEEEE"
+                    android:scaleType="centerCrop" />
+
+                <ImageButton
+                    android:id="@+id/btn_menu"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/bg_role_pill_inactive"
+                    android:src="@drawable/ic_menu"
+                    app:tint="@color/register_text_dark" />
+            </RelativeLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="14dp">
+                android:padding="24dp">
 
                 <TextView
-                    android:id="@+id/txt_location"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/txt_detail_title"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/text_primary" />
+                    android:text="@string/listing_detail_placeholder_title"
+                    android:textColor="@color/register_text_dark"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/ic_location"
+                        app:tint="@color/register_rust" />
+
+                    <TextView
+                        android:id="@+id/txt_detail_location"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:text="@string/listing_detail_placeholder_location"
+                        android:textColor="@color/register_text_light"
+                        android:textSize="16sp" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginVertical="24dp"
+                    android:background="#E0E0E0" />
 
                 <TextView
-                    android:id="@+id/txt_price"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
-                    android:textColor="@color/accent"
+                    android:text="@string/listing_detail_overview_label"
+                    android:textColor="@color/register_text_dark"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/txt_type"
+                    android:id="@+id/txt_detail_type"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
-                    android:textColor="@color/text_primary" />
+                    android:layout_marginTop="12dp"
+                    android:text="@string/listing_detail_placeholder_type"
+                    android:textColor="@color/register_text_dark"
+                    android:textSize="15sp" />
 
                 <TextView
-                    android:id="@+id/txt_availability"
+                    android:id="@+id/txt_detail_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/listing_detail_placeholder_description"
+                    android:textColor="@color/register_text_light"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/txt_detail_availability"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
-                    android:textColor="@color/text_secondary" />
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
+                    android:layout_marginTop="8dp"
+                    android:text="@string/listing_detail_placeholder_availability"
+                    android:textColor="@color/register_text_dark"
+                    android:textSize="15sp" />
 
-        <Button
+                <TextView
+                    android:id="@+id/txt_detail_rent_deposit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/listing_detail_placeholder_rent_deposit"
+                    android:textColor="@color/register_text_dark"
+                    android:textSize="15sp" />
+
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:elevation="8dp"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_reserve"
+            style="@style/Widget.HouseFinder.Button"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text="@string/btn_reserve" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_chat_landlord"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/bg_auth_button_primary_soft"
-            android:text="Pay deposit and reserve" />
-
+            android:layout_marginTop="10dp"
+            android:text="@string/chat_button_label"
+            android:textAllCaps="false" />
     </LinearLayout>
-</ScrollView>
 
+</LinearLayout>

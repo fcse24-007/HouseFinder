@@ -21,10 +21,15 @@ interface ChatMessageDao {
     fun getConversation(conversationId: String): Flow<List<ChatMessage>>
 
     @Query("""
-        SELECT * FROM chat_messages
-        WHERE (senderId = :userId OR receiverId = :userId)
-        GROUP BY conversationId
-        ORDER BY timestamp DESC
+        SELECT cm.* FROM chat_messages cm
+        INNER JOIN (
+            SELECT conversationId, MAX(timestamp) AS maxTimestamp
+            FROM chat_messages
+            WHERE senderId = :userId OR receiverId = :userId
+            GROUP BY conversationId
+        ) latest ON cm.conversationId = latest.conversationId AND cm.timestamp = latest.maxTimestamp
+        WHERE cm.senderId = :userId OR cm.receiverId = :userId
+        ORDER BY cm.timestamp DESC
     """)
     fun getConversationList(userId: Int): Flow<List<ChatMessage>>
 

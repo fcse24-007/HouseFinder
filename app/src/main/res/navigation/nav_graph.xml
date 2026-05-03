@@ -14,6 +14,9 @@
         <action
             android:id="@+id/action_loginFragment_to_listingListFragment"
             app:destination="@id/listingListFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_providerDashboardFragment"
+            app:destination="@id/providerDashboardFragment" />
     </fragment>
 
     <fragment
@@ -23,6 +26,9 @@
         <action
             android:id="@+id/action_registerFragment_to_listingListFragment"
             app:destination="@id/listingListFragment" />
+        <action
+            android:id="@+id/action_registerFragment_to_providerDashboardFragment"
+            app:destination="@id/providerDashboardFragment" />
     </fragment>
 
     <fragment
@@ -52,12 +58,20 @@
         <action
             android:id="@+id/action_listingDetailFragment_to_paymentFragment"
             app:destination="@id/paymentFragment" />
+        <action
+            android:id="@+id/action_listingDetailFragment_to_chatThreadFragment"
+            app:destination="@id/chatThreadFragment" />
     </fragment>
 
     <fragment
         android:id="@+id/preferencesFragment"
         android:name="com.example.housefinder.ui.preferences.PreferencesFragment"
         android:label="Preferences" />
+
+    <fragment
+        android:id="@+id/myReservationsFragment"
+        android:name="com.example.housefinder.ui.reservation.MyReservationsFragment"
+        android:label="My Reservations" />
 
     <fragment
         android:id="@+id/paymentFragment"
@@ -83,6 +97,64 @@
             app:destination="@id/listingListFragment"
             app:popUpTo="@id/listingListFragment"
             app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/providerDashboardFragment"
+        android:name="com.example.housefinder.ui.provider.ProviderDashboardFragment"
+        android:label="Provider Dashboard">
+        <action
+            android:id="@+id/action_providerDashboardFragment_to_loginFragment"
+            app:destination="@id/loginFragment"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_providerDashboardFragment_to_providerListingFormFragment"
+            app:destination="@id/providerListingFormFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/providerListingFormFragment"
+        android:name="com.example.housefinder.ui.provider.ProviderListingFormFragment"
+        android:label="Listing Form">
+        <argument
+            android:name="listingId"
+            app:argType="integer"
+            android:defaultValue="-1" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.example.housefinder.ui.settings.SettingsFragment"
+        android:label="Settings" />
+
+    <fragment
+        android:id="@+id/helpFragment"
+        android:name="com.example.housefinder.ui.help.HelpFragment"
+        android:label="Help &amp; FAQ" />
+
+    <fragment
+        android:id="@+id/chatListFragment"
+        android:name="com.example.housefinder.ui.chat.ChatListFragment"
+        android:label="Chats">
+        <action
+            android:id="@+id/action_chatListFragment_to_chatThreadFragment"
+            app:destination="@id/chatThreadFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/chatThreadFragment"
+        android:name="com.example.housefinder.ui.chat.ChatThreadFragment"
+        android:label="Chat">
+        <argument
+            android:name="conversationId"
+            app:argType="string" />
+        <argument
+            android:name="listingId"
+            app:argType="integer" />
+        <argument
+            android:name="partnerId"
+            app:argType="integer" />
     </fragment>
 
 </navigation>

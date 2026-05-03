@@ -1,48 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Gaborone Edition Palette -->
+    <!-- Gaborone Edition Palette - Modern Material 3 -->
 
-    <!-- Primary: Gaborone Clay – buttons, active states, key accents -->
-    <color name="primary">#B84A2D</color>
+    <!-- Primary: Gaborone Clay (Enhanced) -->
+    <color name="primary">#D64E28</color>
 
-    <!-- Secondary: Mokolodi Green – FAB, success, verification badge, chips -->
-    <color name="secondary">#2F6B4A</color>
+    <!-- Secondary: Mokolodi Green (Enhanced) -->
+    <color name="secondary">#3A7D52</color>
+    <color name="on_secondary">#FFFFFF</color>
 
-    <!-- Tertiary: Savanna Gold – price tags, "new" badges, rating stars -->
-    <color name="accent">#D49A2A</color>
+    <!-- Tertiary: Savanna Gold (Enhanced) -->
+    <color name="accent">#E8B340</color>
 
-    <!-- Surfaces & backgrounds -->
-    <!-- Soft Kalahari Sand – main background -->
-    <color name="background_light">#F9F6F0</color>
-    <!-- Ivory White – cards, sheets, dialogs -->
+    <!-- Surfaces & backgrounds - Light Theme -->
+    <color name="background_light">#FEFBF7</color>
     <color name="surface_light">#FFFFFF</color>
+    <color name="surface_variant">#F0E8E0</color>
 
-    <!-- Text -->
-    <!-- Charcoal Dusk – primary text (neutral alias kept for XML themes) -->
-    <color name="neutral">#2E2E2E</color>
-    <color name="text_primary">#2E2E2E</color>
-    <!-- Stone Gray – secondary text, captions, icons -->
-    <color name="text_secondary">#6B5E54</color>
+    <!-- Text Colors - Light Theme -->
+    <color name="text_primary">#1F1B16</color>
+    <color name="text_secondary">#7B6F68</color>
+    <color name="text_tertiary">#AFA39D</color>
 
-    <!-- Utility -->
-    <!-- Dusty Border – subtle borders and separators -->
-    <color name="border_light">#E2DCD5</color>
-    <!-- Success = Mokolodi Green -->
-    <color name="success">#2F6B4A</color>
-    <!-- Warning = Savanna Gold -->
-    <color name="warning">#D49A2A</color>
-    <!-- Acacia Thorn Red – alerts and error messages -->
+    <!-- Utility Colors -->
+    <color name="success">#3A7D52</color>
+    <color name="success_light">#C8E6D8</color>
+    <color name="warning">#E8B340</color>
     <color name="error">#C13C3C</color>
 
+    <!-- State Colors -->
+    <color name="border_light">#D4C4BA</color>
+    <color name="divider_light">#E0D5CD</color>
+
+    <!-- Register Screen Specific Colors -->
+    <color name="summary_background">#F9EAE1</color>
+    <color name="register_rust">#B24A2C</color>
+    <color name="register_cream">#FAF9F6</color>
+    <color name="register_text_dark">#4A4A4A</color>
+    <color name="register_text_light">#757575</color>
+
     <!-- Legacy (kept for compatibility) -->
-    <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <!-- Dark theme variants (used by values-night/themes.xml) -->
-    <color name="primary_dark">#E8896E</color>
-    <color name="on_primary_dark">#5C1900</color>
-    <color name="secondary_dark">#74B896</color>
-    <color name="on_secondary_dark">#003920</color>
+    <!-- Dark theme variants -->
+    <color name="secondary_dark_theme">#8DD4A7</color>
+    <color name="on_secondary_dark_theme">#003920</color>
     <color name="background_dark">#1C1512</color>
     <color name="surface_dark">#2A2319</color>
     <color name="on_background_dark">#EDE0D4</color>

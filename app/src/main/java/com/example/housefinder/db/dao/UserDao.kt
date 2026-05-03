@@ -27,6 +27,16 @@ interface UserDao {
     @Query("SELECT * FROM users WHERE email = :email LIMIT 1")
     suspend fun getByEmail(email: String): User?
 
+    @Query(
+        """
+        SELECT studentId FROM users
+        WHERE role = 'PROVIDER' AND studentId LIKE 'PRV%'
+        ORDER BY CAST(SUBSTR(studentId, 4) AS INTEGER) DESC
+        LIMIT 1
+        """
+    )
+    suspend fun getLatestProviderIdentifier(): String?
+
     @Query("SELECT COUNT(*) FROM users")
     suspend fun count(): Int
 }

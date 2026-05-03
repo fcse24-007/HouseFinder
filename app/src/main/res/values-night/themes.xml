@@ -1,7 +1,22 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.HouseFinder" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+    <style name="Base.Theme.HouseFinder" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/register_rust</item>
+        <item name="colorPrimaryDark">@color/register_rust</item>
+        <item name="colorAccent">@color/register_rust</item>
+        <item name="colorSecondary">@color/secondary_dark_theme</item>
+        <item name="colorOnSecondary">@color/on_secondary_dark_theme</item>
+        <item name="colorSurface">@color/surface_dark</item>
+        <item name="colorOnSurface">@color/on_background_dark</item>
+        <item name="colorError">@color/error_dark</item>
+
+        <item name="android:windowBackground">@color/background_dark</item>
+        <item name="android:colorBackground">@color/background_dark</item>
+        <item name="android:navigationBarColor">@color/background_dark</item>
+        <item name="android:statusBarColor">@color/background_dark</item>
+
+        <item name="android:textColorPrimary">@color/on_background_dark</item>
+        <item name="android:textColorSecondary">@color/text_tertiary</item>
     </style>
+
+    <style name="Theme.HouseFinder" parent="Base.Theme.HouseFinder" />
 </resources>

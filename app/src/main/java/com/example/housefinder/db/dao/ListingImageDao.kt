@@ -20,6 +20,9 @@ interface ListingImageDao {
     @Query("SELECT * FROM listing_images WHERE listingId = :listingId ORDER BY sortOrder ASC LIMIT 1")
     suspend fun getCoverImage(listingId: Int): ListingImage?
 
+    @Query("SELECT IFNULL(SUM(id), 0) FROM listing_images")
+    fun observeChangeToken(): Flow<Long>
+
     /**
      * Atomically replaces a listing's cover image by deleting existing image rows
      * for the listing and inserting exactly one new cover image entry.

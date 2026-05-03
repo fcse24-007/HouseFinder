@@ -23,6 +23,10 @@ interface ListingDao {
     @Query("SELECT * FROM listings WHERE status = 'AVAILABLE' ORDER BY createdAt DESC")
     fun getAllAvailable(): Flow<List<Listing>>
 
+    @Transaction
+    @Query("SELECT * FROM listings WHERE status = 'AVAILABLE' ORDER BY createdAt DESC")
+    fun getAllAvailableWithImage(): Flow<List<com.example.housefinder.db.entities.ListingWithImage>>
+
     @Query("""
         SELECT * FROM listings 
         WHERE status = 'AVAILABLE'
@@ -42,6 +46,9 @@ interface ListingDao {
 
     @Query("SELECT * FROM listings WHERE id = :id LIMIT 1")
     fun getById(id: Int): Flow<Listing?>
+
+    @Query("SELECT * FROM listings WHERE id = :id LIMIT 1")
+    suspend fun getByIdOnce(id: Int): Listing?
 
     @Query("SELECT * FROM listings WHERE providerId = :providerId")
     fun getByProvider(providerId: Int): Flow<List<Listing>>

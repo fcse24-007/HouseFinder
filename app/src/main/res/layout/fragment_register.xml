@@ -3,26 +3,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_light"
+    android:background="@color/register_cream"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="112dp"
-        android:background="@color/surface_light"
-        android:gravity="bottom"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
-        android:paddingBottom="16dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/app_brand_name"
-            android:textColor="@color/text_primary"
-            android:textSize="22sp"
-            android:textStyle="bold" />
-    </LinearLayout>
+    <!-- Top App Name -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/app_brand_name"
+        android:textColor="@color/register_text_dark"
+        android:textSize="18sp"
+        android:textStyle="bold" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -33,57 +26,77 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
+            android:gravity="center_horizontal"
             android:orientation="vertical"
-            android:padding="22dp">
+            android:padding="24dp">
 
             <TextView
+                android:id="@+id/txt_register_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
                 android:text="@string/register_screen_title"
-                android:textColor="@color/text_primary"
-                android:textSize="52sp"
+                android:textColor="@color/register_text_dark"
+                android:textSize="32sp"
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/txt_register_subtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="4dp"
                 android:text="@string/auth_subtitle"
-                android:textColor="@color/text_secondary"
-                android:textSize="18sp" />
+                android:textColor="@color/register_text_light"
+                android:textSize="14sp" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/txt_role_prompt"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="28dp"
-                android:gravity="center"
+                android:layout_marginTop="20dp"
+                android:text="@string/register_role_prompt"
+                android:textColor="@color/register_text_dark"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <!-- Role Selection Pill -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
                 android:orientation="horizontal">
 
-                <Button
+                <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btn_role_student_register"
-                    android:layout_width="0dp"
-                    android:layout_height="54dp"
+                    android:layout_width="120dp"
+                    android:layout_height="48dp"
                     android:layout_marginEnd="8dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/bg_role_pill_selected"
+                    android:background="@drawable/bg_role_pill_active"
                     android:text="@string/role_student"
                     android:textAllCaps="false"
                     android:textColor="@color/white"
-                    android:textSize="18sp" />
+                    android:textSize="16sp" />
 
-                <Button
+                <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btn_role_provider_register"
-                    android:layout_width="0dp"
-                    android:layout_height="54dp"
+                    android:layout_width="120dp"
+                    android:layout_height="48dp"
                     android:layout_marginStart="8dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/bg_role_pill_unselected"
+                    android:background="@drawable/bg_role_pill_inactive"
                     android:text="@string/role_provider"
                     android:textAllCaps="false"
-                    android:textColor="@color/text_primary"
-                    android:textSize="18sp" />
+                    android:textColor="@color/register_text_dark"
+                    android:textSize="16sp" />
             </LinearLayout>
+
+            <TextView
+                android:id="@+id/txt_role_helper"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/register_role_helper"
+                android:textColor="@color/register_text_light"
+                android:textSize="12sp" />
 
             <Spinner
                 android:id="@+id/spinner_role"
@@ -91,143 +104,202 @@
                 android:layout_height="1dp"
                 android:visibility="gone" />
 
-            <com.google.android.material.card.MaterialCardView
+            <TextView
+                android:id="@+id/txt_role_selected"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/selected_role_student"
+                android:textColor="@color/register_rust"
+                android:textStyle="bold" />
+
+            <!-- Common Fields -->
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.HouseFinder.TextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                app:cardBackgroundColor="@color/surface_light"
-                app:cardCornerRadius="18dp"
-                app:cardElevation="0dp"
-                app:strokeColor="@color/border_light"
-                app:strokeWidth="1dp">
+                android:layout_marginTop="32dp"
+                app:startIconDrawable="@drawable/ic_person"
+                app:startIconTint="@color/register_rust">
 
-                <EditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/edt_name"
+                    style="@style/Widget.HouseFinder.TextInputEditText"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:autofillHints="name"
-                    android:background="@android:color/transparent"
+                    android:layout_height="60dp"
                     android:hint="@string/full_name_hint"
                     android:inputType="textPersonName"
-                    android:padding="16dp"
-                    android:textColor="@color/text_primary"
-                    android:textColorHint="@color/text_secondary" />
-            </com.google.android.material.card.MaterialCardView>
+                    android:textColorHint="@color/register_text_light"
+                    android:textSize="16sp" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.card.MaterialCardView
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.HouseFinder.TextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                app:cardBackgroundColor="@color/surface_light"
-                app:cardCornerRadius="18dp"
-                app:cardElevation="0dp"
-                app:strokeColor="@color/border_light"
-                app:strokeWidth="1dp">
+                android:layout_marginTop="16dp"
+                app:startIconDrawable="@drawable/ic_email"
+                app:startIconTint="@color/register_rust">
 
-                <EditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/edt_email"
+                    style="@style/Widget.HouseFinder.TextInputEditText"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:autofillHints="emailAddress"
-                    android:background="@android:color/transparent"
+                    android:layout_height="60dp"
                     android:hint="@string/email_hint"
                     android:inputType="textEmailAddress"
-                    android:padding="16dp"
-                    android:textColor="@color/text_primary"
-                    android:textColorHint="@color/text_secondary" />
-            </com.google.android.material.card.MaterialCardView>
+                    android:textColorHint="@color/register_text_light"
+                    android:textSize="16sp" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.card.MaterialCardView
+            <!-- Student Specific Fields Container -->
+            <LinearLayout
+                android:id="@+id/container_student_fields"
                 android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:layout_marginTop="12dp"
-                app:cardBackgroundColor="@color/surface_light"
-                app:cardCornerRadius="18dp"
-                app:cardElevation="0dp"
-                app:strokeColor="@color/border_light"
-                app:strokeWidth="1dp">
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="visible">
 
-                <Spinner
-                    android:id="@+id/spinner_university"
+                <!-- University Spinner Input Style -->
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@android:color/transparent"
+                    android:layout_height="60dp"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/bg_register_input"
                     android:paddingStart="12dp"
-                    android:paddingEnd="12dp" />
-            </com.google.android.material.card.MaterialCardView>
+                    android:paddingEnd="12dp">
 
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                app:cardBackgroundColor="@color/surface_light"
-                app:cardCornerRadius="18dp"
-                app:cardElevation="0dp"
-                app:strokeColor="@color/border_light"
-                app:strokeWidth="1dp">
+                    <ImageView
+                        android:id="@+id/img_school"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/ic_school"
+                        app:tint="@color/register_rust" />
 
-                <EditText
-                    android:id="@+id/edt_student_id"
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="12dp"
+                        android:layout_toEndOf="@id/img_school"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/label_select_institution"
+                            android:textColor="@color/register_text_light"
+                            android:textSize="10sp" />
+
+                        <Spinner
+                            android:id="@+id/spinner_university"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@null" />
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/ic_arrow_drop_down"
+                        app:tint="@color/register_text_light" />
+                </RelativeLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.HouseFinder.TextInputLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:autofillHints="username"
-                    android:background="@android:color/transparent"
-                    android:hint="@string/student_id_hint"
-                    android:inputType="text"
+                    android:layout_marginTop="16dp"
+                    app:startIconDrawable="@drawable/ic_card"
+                    app:startIconTint="@color/register_rust">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edt_student_id"
+                        style="@style/Widget.HouseFinder.TextInputEditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:hint="@string/student_id_hint"
+                        android:inputType="text"
+                        android:textColorHint="@color/register_text_light"
+                        android:textSize="16sp" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+
+            <!-- Landlord Specific Fields Container -->
+            <LinearLayout
+                android:id="@+id/container_landlord_fields"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/txt_landlord_id_info_label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/landlord_id_auto_label"
+                    android:textColor="@color/register_text_dark"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/txt_landlord_id_info_value"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:background="@drawable/bg_register_input"
                     android:padding="16dp"
-                    android:textColor="@color/text_primary"
-                    android:textColorHint="@color/text_secondary" />
-            </com.google.android.material.card.MaterialCardView>
+                    android:text="@string/landlord_id_auto_hint"
+                    android:textColor="@color/register_text_light"
+                    android:textSize="14sp" />
+            </LinearLayout>
 
-            <com.google.android.material.card.MaterialCardView
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.HouseFinder.TextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                app:cardBackgroundColor="@color/surface_light"
-                app:cardCornerRadius="18dp"
-                app:cardElevation="0dp"
-                app:strokeColor="@color/border_light"
-                app:strokeWidth="1dp">
+                android:layout_marginTop="16dp"
+                app:passwordToggleEnabled="true"
+                app:startIconDrawable="@drawable/ic_lock"
+                app:startIconTint="@color/register_rust">
 
-                <EditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/edt_password"
+                    style="@style/Widget.HouseFinder.TextInputEditText"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:autofillHints="password"
-                    android:background="@android:color/transparent"
+                    android:layout_height="60dp"
                     android:hint="@string/register_password_hint"
                     android:inputType="textPassword"
-                    android:padding="16dp"
-                    android:textColor="@color/text_primary"
-                    android:textColorHint="@color/text_secondary" />
-            </com.google.android.material.card.MaterialCardView>
+                    android:textColorHint="@color/register_text_light"
+                    android:textSize="16sp" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <Button
+            <!-- Register Button -->
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_register"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:layout_marginTop="24dp"
-                android:background="@drawable/bg_auth_button_primary_soft"
+                android:layout_marginTop="32dp"
+                android:backgroundTint="@color/register_rust"
                 android:text="@string/create_account_cta"
                 android:textAllCaps="false"
-                android:textColor="@color/white"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+                android:textSize="18sp"
+                app:cornerRadius="12dp" />
 
-            <Button
+            <!-- Login Link -->
+            <TextView
                 android:id="@+id/btn_go_login"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="14dp"
-                android:background="@android:color/transparent"
-                android:minWidth="0dp"
-                android:minHeight="0dp"
-                android:padding="0dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="16dp"
                 android:text="@string/already_have_account_login"
-                android:textAllCaps="false"
-                android:textColor="@color/text_secondary"
-                android:textSize="16sp" />
+                android:textColor="@color/register_text_dark"
+                android:textSize="14sp" />
         </LinearLayout>
     </ScrollView>
 </LinearLayout>
-

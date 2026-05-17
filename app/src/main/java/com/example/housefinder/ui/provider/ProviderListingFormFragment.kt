@@ -4,6 +4,7 @@ import android.app.DatePickerDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.text.InputType
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
@@ -93,7 +94,7 @@ class ProviderListingFormFragment : Fragment(R.layout.fragment_provider_listing_
                 ListingInputOptions.gaboroneAreas
             )
         )
-        locationInput.keyListener = null
+        locationInput.setRawInputType(InputType.TYPE_NULL)
         locationInput.setOnClickListener { locationInput.showDropDown() }
         typeInput.setAdapter(
             ArrayAdapter(
@@ -102,9 +103,9 @@ class ProviderListingFormFragment : Fragment(R.layout.fragment_provider_listing_
                 ListingInputOptions.roomTypeLabels
             )
         )
-        typeInput.keyListener = null
+        typeInput.setRawInputType(InputType.TYPE_NULL)
         typeInput.setOnClickListener { typeInput.showDropDown() }
-        availabilityInput.keyListener = null
+        availabilityInput.setRawInputType(InputType.TYPE_NULL)
         availabilityInput.setOnClickListener {
             showDatePicker { selectedDate ->
                 availabilityInput.setText(selectedDate, false)
@@ -132,7 +133,6 @@ class ProviderListingFormFragment : Fragment(R.layout.fragment_provider_listing_
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.coverImage.collectLatest { path ->
-                saveButton.isEnabled = !path.isNullOrBlank()
                 updateSelectedImageUi(path)
             }
         }

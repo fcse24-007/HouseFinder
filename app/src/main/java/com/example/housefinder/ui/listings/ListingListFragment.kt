@@ -2,6 +2,7 @@ package com.example.housefinder.ui.listings
 
 import android.app.DatePickerDialog
 import android.os.Bundle
+import android.text.InputType
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
@@ -57,7 +58,7 @@ class ListingListFragment : Fragment(R.layout.fragment_listing_list) {
                 ListingInputOptions.gaboroneAreas
             )
         )
-        locationInput.keyListener = null
+        locationInput.setRawInputType(InputType.TYPE_NULL)
         locationInput.setOnClickListener { locationInput.showDropDown() }
         typeInput.setAdapter(
             ArrayAdapter(
@@ -66,9 +67,9 @@ class ListingListFragment : Fragment(R.layout.fragment_listing_list) {
                 ListingInputOptions.roomTypeLabels
             )
         )
-        typeInput.keyListener = null
+        typeInput.setRawInputType(InputType.TYPE_NULL)
         typeInput.setOnClickListener { typeInput.showDropDown() }
-        availabilityInput.keyListener = null
+        availabilityInput.setRawInputType(InputType.TYPE_NULL)
         availabilityInput.setOnClickListener {
             showDatePicker { selectedDate ->
                 availabilityInput.setText(selectedDate, false)
@@ -128,7 +129,7 @@ class ListingListFragment : Fragment(R.layout.fragment_listing_list) {
                 Toast.makeText(requireContext(), R.string.filter_invalid_price_min, Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-            if (maxPrice != null && maxPrice <= 0f) {
+            if (maxPrice != null && maxPrice < 0f) {
                 Toast.makeText(requireContext(), R.string.filter_invalid_price_max, Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
@@ -148,11 +149,12 @@ class ListingListFragment : Fragment(R.layout.fragment_listing_list) {
                 return@setOnClickListener
             }
 
+            val selectedTypeLabel = typeInput.text.toString().trim().takeIf { it.isNotBlank() }
             viewModel.applyFilters(
                 minPrice = minPrice,
                 maxPrice = maxPrice,
                 location = locationInput.text.toString().trim().takeIf { it.isNotBlank() },
-                type = ListingInputOptions.toStorageType(typeInput.text.toString().trim()),
+                type = selectedTypeLabel?.let { ListingInputOptions.toStorageType(it) },
                 availabilityDate = availabilityDate
             )
         }

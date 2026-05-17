@@ -29,6 +29,6 @@ object ListingInputOptions {
     fun toDisplayType(storageType: String?): String {
         if (storageType.isNullOrBlank()) return ""
         return roomTypeToStorage.entries.firstOrNull { it.value == storageType }?.key
-            ?: storageType.replace('_', ' ')
+            ?: storageType
     }
 }

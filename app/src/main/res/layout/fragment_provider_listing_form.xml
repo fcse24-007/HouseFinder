@@ -144,9 +144,8 @@
                 android:layout_marginTop="16dp"
                 app:startIconDrawable="@drawable/ic_location">
 
-                <com.google.android.material.textfield.TextInputEditText
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
                     android:id="@+id/edt_listing_location"
-                    class="android.widget.AutoCompleteTextView"
                     style="@style/Widget.HouseFinder.TextInputEditText"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
@@ -160,9 +159,8 @@
                 android:layout_marginTop="16dp"
                 app:startIconDrawable="@drawable/ic_home">
 
-                <com.google.android.material.textfield.TextInputEditText
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
                     android:id="@+id/edt_listing_type"
-                    class="android.widget.AutoCompleteTextView"
                     style="@style/Widget.HouseFinder.TextInputEditText"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
@@ -223,9 +221,8 @@
                 android:layout_marginTop="16dp"
                 app:startIconDrawable="@drawable/ic_help">
 
-                <com.google.android.material.textfield.TextInputEditText
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
                     android:id="@+id/edt_listing_availability"
-                    class="android.widget.AutoCompleteTextView"
                     style="@style/Widget.HouseFinder.TextInputEditText"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"

@@ -16,9 +16,10 @@ interface ChatMessageDao {
     @Query("""
         SELECT * FROM chat_messages
         WHERE conversationId = :conversationId
+        AND (senderId = :userId OR receiverId = :userId)
         ORDER BY timestamp ASC
     """)
-    fun getConversation(conversationId: String): Flow<List<ChatMessage>>
+    fun getConversationForUser(conversationId: String, userId: Int): Flow<List<ChatMessage>>
 
     @Query("""
         SELECT cm.* FROM chat_messages cm

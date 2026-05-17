@@ -153,7 +153,7 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
                 when (result) {
                     is RegisterViewModel.RegistrationResult.Success -> {
                         val saved = result.user
-                        SessionManager(requireContext()).saveSession(saved.id, saved.role, saved.name)
+                        SessionManager(requireContext()).saveSession(saved.id)
                         
                         // Navigate based on user role
                         when (saved.role) {

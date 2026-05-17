@@ -68,7 +68,15 @@ class ProviderDashboardFragment : Fragment(R.layout.fragment_provider_dashboard)
             }
         }
 
-        viewModel.loadListings(providerId)
+        viewLifecycleOwner.lifecycleScope.launch {
+            val sessionUser = AppDatabase.getInstance(requireContext()).userDao().getById(providerId)
+            if (sessionUser?.role != "PROVIDER") {
+                Toast.makeText(requireContext(), "Provider access required", Toast.LENGTH_SHORT).show()
+                findNavController().navigate(R.id.listingListFragment)
+                return@launch
+            }
+            viewModel.loadListings(providerId)
+        }
 
         addListingButton.setOnClickListener {
             val action = ProviderDashboardFragmentDirections.actionProviderDashboardFragmentToProviderListingFormFragment(listingId = -1)

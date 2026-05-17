@@ -85,6 +85,33 @@
                 android:textColor="@color/text_tertiary"
                 android:textSize="12sp" />
 
+            <TextView
+                android:id="@+id/txt_receipt_amount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="@string/receipt_amount_default"
+                android:textColor="@color/text_primary"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/txt_receipt_method"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/receipt_method_default"
+                android:textColor="@color/text_primary"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/txt_receipt_paid_at"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/receipt_paid_at_default"
+                android:textColor="@color/text_primary"
+                android:textSize="13sp" />
+
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
@@ -107,4 +134,3 @@
         android:textAllCaps="false" />
 
 </LinearLayout>
-

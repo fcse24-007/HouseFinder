@@ -8,8 +8,8 @@ import javax.inject.Inject
 
 class ChatRepository @Inject constructor(private val chatMessageDao: ChatMessageDao) {
 
-    fun getConversation(conversationId: String): Flow<List<ChatMessage>> =
-        chatMessageDao.getConversation(conversationId)
+    fun getConversationForUser(conversationId: String, userId: Int): Flow<List<ChatMessage>> =
+        chatMessageDao.getConversationForUser(conversationId, userId)
 
     fun getConversationList(userId: Int): Flow<List<ChatMessage>> =
         chatMessageDao.getConversationList(userId)

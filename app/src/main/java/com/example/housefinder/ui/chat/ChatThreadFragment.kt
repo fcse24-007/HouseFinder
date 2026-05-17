@@ -75,6 +75,13 @@ class ChatThreadFragment : Fragment(R.layout.fragment_chat_thread) {
             }
         }
 
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.error.collectLatest { message ->
+                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+                findNavController().popBackStack()
+            }
+        }
+
         viewModel.loadThread(conversationId, partnerId, listingId, currentUserId)
 
         sendButton.setOnClickListener {

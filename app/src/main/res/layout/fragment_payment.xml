@@ -205,52 +205,9 @@
                     style="@style/Widget.HouseFinder.TextInputEditText"
                     android:layout_width="match_parent"
                     android:layout_height="58dp"
-                    android:digits="0123456789"
-                    android:hint="@string/hint_card_number"
-                    android:maxLength="16"
-                    android:inputType="number" />
+                    android:hint="@string/hint_payment_alias"
+                    android:inputType="textCapCharacters" />
             </com.google.android.material.textfield.TextInputLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:orientation="horizontal">
-
-                <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.HouseFinder.TextInputLayout"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/edt_expiry_date"
-                        style="@style/Widget.HouseFinder.TextInputEditText"
-                        android:layout_width="match_parent"
-                        android:layout_height="58dp"
-                        android:hint="@string/hint_expiry"
-                        android:inputType="text" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <Space
-                    android:layout_width="10dp"
-                    android:layout_height="1dp" />
-
-                <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.HouseFinder.TextInputLayout"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/edt_cvv"
-                        style="@style/Widget.HouseFinder.TextInputEditText"
-                        android:layout_width="match_parent"
-                        android:layout_height="58dp"
-                        android:hint="@string/hint_cvv"
-                        android:inputType="numberPassword" />
-                </com.google.android.material.textfield.TextInputLayout>
-            </LinearLayout>
 
             <TextView
                 android:layout_width="match_parent"
@@ -281,4 +238,3 @@
     </ScrollView>
 
 </LinearLayout>
-

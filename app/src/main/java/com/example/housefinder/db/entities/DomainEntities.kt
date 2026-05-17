@@ -96,8 +96,8 @@ data class ListingImage(
     ],
     indices = [
         Index(value = ["referenceNumber"], unique = true),
+        Index(value = ["listingId"], unique = true),
         Index("studentId"),
-        Index("listingId"),
         Index("status")
     ]
 )
@@ -155,6 +155,7 @@ data class UserPreference(
     val maxPrice: Float? = null,
     val location: String? = null,
     val type: String? = null,
+    val availabilityDate: String? = null,
     val notificationsEnabled: Boolean = true,
     val updatedAt: Long = System.currentTimeMillis()
 )
@@ -194,4 +195,3 @@ data class ListingWithImage(
 ) {
     val coverImagePath: String? get() = images.sortedBy { it.sortOrder }.firstOrNull()?.imagePath
 }
-

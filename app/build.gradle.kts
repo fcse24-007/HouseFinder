@@ -21,13 +21,22 @@ android {
     }
 
     buildTypes {
+        debug {
+            buildConfigField("boolean", "DEMO_MODE", "true")
+            buildConfigField("boolean", "SIMULATED_PAYMENTS", "true")
+        }
         release {
             isMinifyEnabled = false
+            buildConfigField("boolean", "DEMO_MODE", "false")
+            buildConfigField("boolean", "SIMULATED_PAYMENTS", "false")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
         }
+    }
+    buildFeatures {
+        buildConfig = true
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -58,6 +67,7 @@ dependencies {
     implementation(libs.androidx.hilt.work)
     kapt(libs.androidx.hilt.compiler)
     implementation(libs.androidx.work.runtime.ktx)
+    implementation(libs.androidx.security.crypto)
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     kapt(libs.androidx.room.compiler)

@@ -13,11 +13,25 @@ import androidx.room.PrimaryKey
             parentColumns = ["id"],
             childColumns = ["senderId"],
             onDelete = ForeignKey.CASCADE
+        ),
+        ForeignKey(
+            entity = User::class,
+            parentColumns = ["id"],
+            childColumns = ["receiverId"],
+            onDelete = ForeignKey.CASCADE
+        ),
+        ForeignKey(
+            entity = Listing::class,
+            parentColumns = ["id"],
+            childColumns = ["listingId"],
+            onDelete = ForeignKey.CASCADE
         )
     ],
     indices = [
         Index("conversationId"),
-        Index("senderId")
+        Index("senderId"),
+        Index("receiverId"),
+        Index("listingId")
     ]
 )
 data class ChatMessage(

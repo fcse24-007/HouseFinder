@@ -5,7 +5,13 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.example.housefinder.db.dao.*
+import com.example.housefinder.db.dao.ChatMessageDao
+import com.example.housefinder.db.dao.ListingDao
+import com.example.housefinder.db.dao.ListingImageDao
+import com.example.housefinder.db.dao.ReceiptDao
+import com.example.housefinder.db.dao.ReservationDao
+import com.example.housefinder.db.dao.UserDao
+import com.example.housefinder.db.dao.UserPreferenceDao
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -36,7 +42,7 @@ val GABORONE_UNIVERSITIES = listOf(
         UserPreference::class,
         ChatMessage::class
     ],
-    version = 4,
+    version = 6,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {

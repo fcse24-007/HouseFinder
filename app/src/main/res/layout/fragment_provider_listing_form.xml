@@ -157,6 +157,36 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
+                app:startIconDrawable="@drawable/ic_home">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edt_listing_type"
+                    style="@style/Widget.HouseFinder.TextInputEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:hint="@string/listing_type_hint" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.HouseFinder.TextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:startIconDrawable="@drawable/ic_description">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edt_listing_amenities"
+                    style="@style/Widget.HouseFinder.TextInputEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:hint="@string/listing_amenities_hint" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.HouseFinder.TextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
                 app:startIconDrawable="@drawable/ic_card">
 
                 <com.google.android.material.textfield.TextInputEditText

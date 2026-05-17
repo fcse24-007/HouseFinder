@@ -1,28 +1,39 @@
 package com.example.housefinder
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.isVisible
+import androidx.core.content.ContextCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.NavigationUI
 import androidx.work.Constraints
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.NavigationUI
+import com.example.housefinder.data.repository.UserRepository
 import com.example.housefinder.ui.common.SessionManager
 import com.example.housefinder.worker.MatchingListingWorker
 import com.google.android.material.navigation.NavigationView
 import java.util.concurrent.TimeUnit
-
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
+    @Inject
+    lateinit var userRepository: UserRepository
+
     private lateinit var drawerLayout: DrawerLayout
+    private val notificationPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,6 +45,7 @@ class MainActivity : AppCompatActivity() {
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         val navController = navHostFragment.navController
+        val sessionManager = SessionManager(this)
 
         NavigationUI.setupWithNavController(navView, navController)
 
@@ -41,38 +53,64 @@ class MainActivity : AppCompatActivity() {
             return destinationId == R.id.loginFragment || destinationId == R.id.registerFragment
         }
 
-        fun applyRoleMenuState() {
-            val role = SessionManager(this).getRole()
-            val name = SessionManager(this).getDisplayName()
-            val isProvider = role == "PROVIDER"
-            
-            navView.menu.findItem(R.id.nav_my_reservations).isVisible = !isProvider
-            navView.menu.findItem(R.id.nav_preferences).isVisible = !isProvider
+        fun navigateToLoginIfNeeded() {
+            if (navController.currentDestination?.id != R.id.loginFragment) {
+                navController.navigate(R.id.loginFragment)
+            }
+        }
 
-            val headerView = navView.getHeaderView(0)
-            headerView.findViewById<android.widget.TextView>(R.id.nav_header_name).text = name ?: "House Finder"
-            headerView.findViewById<android.widget.TextView>(R.id.nav_header_subtitle).text = role ?: ""
+        fun applyRoleMenuState() {
+            lifecycleScope.launch {
+                val userId = sessionManager.getUserId()
+                val user = userId?.let { userRepository.getById(it) }
+                if (userId != null && user == null) {
+                    sessionManager.clearSession()
+                    navigateToLoginIfNeeded()
+                    return@launch
+                }
+
+                val isProvider = user?.role == "PROVIDER"
+                navView.menu.findItem(R.id.nav_my_reservations).isVisible = !isProvider
+                navView.menu.findItem(R.id.nav_preferences).isVisible = !isProvider
+
+                val headerView = navView.getHeaderView(0)
+                headerView.findViewById<android.widget.TextView>(R.id.nav_header_name).text =
+                    user?.name ?: getString(R.string.app_brand_name)
+                headerView.findViewById<android.widget.TextView>(R.id.nav_header_subtitle).text =
+                    user?.role.orEmpty()
+            }
         }
 
         navView.setNavigationItemSelectedListener { item ->
-            val targetDestination = when (item.itemId) {
-                R.id.nav_home -> {
-                    if (SessionManager(this).getRole() == "PROVIDER") R.id.providerDashboardFragment
-                    else R.id.listingListFragment
+            lifecycleScope.launch {
+                val userId = sessionManager.getUserId()
+                val user = userId?.let { userRepository.getById(it) }
+                if (userId == null || user == null) {
+                    sessionManager.clearSession()
+                    navigateToLoginIfNeeded()
+                    drawerLayout.closeDrawers()
+                    return@launch
                 }
 
-                R.id.nav_my_reservations -> R.id.myReservationsFragment
-                R.id.nav_preferences -> R.id.preferencesFragment
-                R.id.nav_chat -> R.id.chatListFragment
-                R.id.nav_help -> R.id.helpFragment
-                R.id.nav_settings -> R.id.settingsFragment
-                else -> return@setNavigationItemSelectedListener false
-            }
+                val targetDestination = when (item.itemId) {
+                    R.id.nav_home -> {
+                        if (user.role == "PROVIDER") R.id.providerDashboardFragment
+                        else R.id.listingListFragment
+                    }
 
-            if (navController.currentDestination?.id != targetDestination) {
-                navController.navigate(targetDestination)
+                    R.id.nav_my_reservations -> R.id.myReservationsFragment
+                    R.id.nav_preferences -> R.id.preferencesFragment
+                    R.id.nav_chat -> R.id.chatListFragment
+                    R.id.nav_help -> R.id.helpFragment
+                    R.id.nav_settings -> R.id.settingsFragment
+                    else -> return@launch
+                }
+
+                if (navController.currentDestination?.id != targetDestination) {
+                    navController.navigate(targetDestination)
+                }
+                drawerLayout.closeDrawers()
             }
-            drawerLayout.closeDrawers()
             true
         }
 
@@ -85,11 +123,15 @@ class MainActivity : AppCompatActivity() {
                 applyRoleMenuState()
             }
         }
+
+        applyRoleMenuState()
+        setupBackgroundWork()
+        requestNotificationPermissionIfNeeded()
     }
 
     private fun setupBackgroundWork() {
         val constraints = Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .setRequiredNetworkType(NetworkType.NOT_REQUIRED)
             .build()
 
         val workRequest = PeriodicWorkRequestBuilder<MatchingListingWorker>(1, TimeUnit.HOURS)
@@ -101,5 +143,18 @@ class MainActivity : AppCompatActivity() {
             ExistingPeriodicWorkPolicy.KEEP,
             workRequest
         )
+    }
+
+    private fun requestNotificationPermissionIfNeeded() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return
+        if (
+            ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            return
+        }
+        notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
     }
 }

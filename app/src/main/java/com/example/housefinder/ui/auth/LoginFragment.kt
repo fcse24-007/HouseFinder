@@ -44,7 +44,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
                 when (result) {
                     is LoginViewModel.LoginResult.Success -> {
                         val user = result.user
-                        SessionManager(requireContext()).saveSession(user.id, user.role, user.name)
+                        SessionManager(requireContext()).saveSession(user.id)
                         
                         // Navigate based on user role
                         when (user.role) {
@@ -64,4 +64,3 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         }
     }
 }
-

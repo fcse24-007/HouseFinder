@@ -7,19 +7,16 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.widget.SwitchCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.housefinder.R
-import com.example.housefinder.db.entities.AppDatabase
 import com.example.housefinder.db.entities.UserPreference
+import com.example.housefinder.ui.common.HouseDateFormatter
 import com.example.housefinder.ui.common.SessionManager
-import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.launch
-
-import androidx.fragment.app.viewModels
 import com.example.housefinder.viewmodel.PreferencesViewModel
-import kotlinx.coroutines.flow.collectLatest
-
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class PreferencesFragment : Fragment(R.layout.fragment_preferences) {
@@ -40,12 +37,15 @@ class PreferencesFragment : Fragment(R.layout.fragment_preferences) {
         val maxPriceInput = view.findViewById<EditText>(R.id.edt_max_price)
         val locationInput = view.findViewById<EditText>(R.id.edt_location)
         val typeInput = view.findViewById<EditText>(R.id.edt_type)
+        val availabilityInput = view.findViewById<EditText>(R.id.edt_availability_date)
         val notificationsSwitch = view.findViewById<SwitchCompat>(R.id.switch_notifications)
         val saveButton = view.findViewById<Button>(R.id.btn_save_preferences)
         val toolbar = view.findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
 
         toolbar.setNavigationOnClickListener {
-            (activity as? com.example.housefinder.MainActivity)?.findViewById<androidx.drawerlayout.widget.DrawerLayout>(R.id.drawer_layout)?.openDrawer(androidx.core.view.GravityCompat.START)
+            (activity as? com.example.housefinder.MainActivity)
+                ?.findViewById<androidx.drawerlayout.widget.DrawerLayout>(R.id.drawer_layout)
+                ?.openDrawer(androidx.core.view.GravityCompat.START)
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -55,6 +55,7 @@ class PreferencesFragment : Fragment(R.layout.fragment_preferences) {
                     maxPriceInput.setText(pref.maxPrice?.toString().orEmpty())
                     locationInput.setText(pref.location.orEmpty())
                     typeInput.setText(pref.type.orEmpty())
+                    availabilityInput.setText(HouseDateFormatter.toDisplayDate(pref.availabilityDate))
                     notificationsSwitch.isChecked = pref.notificationsEnabled
                 }
             }
@@ -63,12 +64,24 @@ class PreferencesFragment : Fragment(R.layout.fragment_preferences) {
         viewModel.loadPreference(userId)
 
         saveButton.setOnClickListener {
+            val availabilityText = availabilityInput.text.toString().trim()
+            val availabilityDate = if (availabilityText.isBlank()) {
+                null
+            } else {
+                HouseDateFormatter.toStorageDate(availabilityText)
+            }
+            if (availabilityText.isNotBlank() && availabilityDate == null) {
+                Toast.makeText(requireContext(), R.string.filter_invalid_date, Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
             val preference = UserPreference(
                 userId = userId,
                 minPrice = minPriceInput.text.toString().trim().toFloatOrNull(),
                 maxPrice = maxPriceInput.text.toString().trim().toFloatOrNull(),
                 location = locationInput.text.toString().trim().takeIf { it.isNotBlank() },
                 type = typeInput.text.toString().trim().uppercase().takeIf { it.isNotBlank() },
+                availabilityDate = availabilityDate,
                 notificationsEnabled = notificationsSwitch.isChecked
             )
 
@@ -77,4 +90,3 @@ class PreferencesFragment : Fragment(R.layout.fragment_preferences) {
         }
     }
 }
-

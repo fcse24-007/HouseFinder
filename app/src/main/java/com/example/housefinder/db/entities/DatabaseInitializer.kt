@@ -99,7 +99,7 @@ object DatabaseInitializer {
 
         db.listingDao().insertAll(listings)
 
-        val imageDrawables = listOf("img_room_1", "img_room_2", "img_room_3")
+        val imageDrawables = listOf("ic_logo", "ic_home", "ic_launcher_foreground")
         val images = (1..50).map { i ->
             ListingImage(
                 listingId = i,

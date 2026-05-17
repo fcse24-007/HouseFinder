@@ -17,6 +17,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.housefinder.R
+import com.example.housefinder.db.entities.AppDatabase
 import com.example.housefinder.ui.common.HouseDateFormatter
 import com.example.housefinder.ui.common.ListingImageLoader
 import com.example.housefinder.ui.common.SessionManager
@@ -52,7 +53,19 @@ class ProviderListingFormFragment : Fragment(R.layout.fragment_provider_listing_
         super.onViewCreated(view, savedInstanceState)
 
         val session = SessionManager(requireContext())
-        val providerId = session.getUserId() ?: return
+        val providerId = session.getUserId()
+        if (providerId == null) {
+            findNavController().navigate(R.id.loginFragment)
+            return
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            val sessionUser = AppDatabase.getInstance(requireContext()).userDao().getById(providerId)
+            if (sessionUser?.role != "PROVIDER") {
+                Toast.makeText(requireContext(), "Provider access required", Toast.LENGTH_SHORT).show()
+                findNavController().navigate(R.id.listingListFragment)
+            }
+        }
 
         val listingId = args.listingId
 
@@ -60,6 +73,8 @@ class ProviderListingFormFragment : Fragment(R.layout.fragment_provider_listing_
         val descriptionInput = view.findViewById<EditText>(R.id.edt_description)
         val priceInput = view.findViewById<EditText>(R.id.edt_listing_price)
         val locationInput = view.findViewById<EditText>(R.id.edt_listing_location)
+        val typeInput = view.findViewById<EditText>(R.id.edt_listing_type)
+        val amenitiesInput = view.findViewById<EditText>(R.id.edt_listing_amenities)
         val depositInput = view.findViewById<EditText>(R.id.edt_listing_deposit)
         val availabilityInput = view.findViewById<EditText>(R.id.edt_listing_availability)
         val uploadButton = view.findViewById<Button>(R.id.btnUpload)
@@ -77,6 +92,8 @@ class ProviderListingFormFragment : Fragment(R.layout.fragment_provider_listing_
                     descriptionInput.setText(listing.description)
                     priceInput.setText(listing.price.toInt().toString())
                     locationInput.setText(listing.location)
+                    typeInput.setText(listing.type)
+                    amenitiesInput.setText(listing.amenities)
                     depositInput.setText(listing.depositAmount.toString())
                     availabilityInput.setText(HouseDateFormatter.toDisplayDate(listing.availabilityDate))
                 }
@@ -110,6 +127,8 @@ class ProviderListingFormFragment : Fragment(R.layout.fragment_provider_listing_
             val description = descriptionInput.text.toString().trim()
             val priceStr = priceInput.text.toString().trim()
             val location = locationInput.text.toString().trim()
+            val type = typeInput.text.toString().trim()
+            val amenities = amenitiesInput.text.toString().trim()
             val depositStr = depositInput.text.toString().trim()
             val availability = availabilityInput.text.toString().trim()
 
@@ -117,6 +136,14 @@ class ProviderListingFormFragment : Fragment(R.layout.fragment_provider_listing_
             if (title.isBlank() || priceStr.isBlank() || location.isBlank() ||
                 depositStr.isBlank() || availability.isBlank()) {
                 Toast.makeText(requireContext(), "Basic fields are required", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            if (type.isBlank()) {
+                Toast.makeText(requireContext(), "Type is required", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            if (amenities.isBlank()) {
+                Toast.makeText(requireContext(), "Amenities are required", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
@@ -140,6 +167,8 @@ class ProviderListingFormFragment : Fragment(R.layout.fragment_provider_listing_
                 description = description,
                 price = price,
                 location = location,
+                type = type,
+                amenities = amenities,
                 deposit = deposit,
                 availability = availability
             )

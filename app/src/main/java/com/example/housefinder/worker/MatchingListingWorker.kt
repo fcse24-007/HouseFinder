@@ -25,11 +25,7 @@ class MatchingListingWorker @AssistedInject constructor(
         val userId = sessionManager.getUserId() ?: return Result.success()
 
         val lastCheck = sessionManager.getLastAlertCheck(userId)
-        val pref = try {
-            preferenceRepository.getForUser(userId).firstOrNull()
-        } catch (e: Exception) {
-            null
-        }
+        val pref = preferenceRepository.getForUser(userId).firstOrNull()
 
         if (pref == null || !pref.notificationsEnabled) return Result.success()
 
@@ -38,7 +34,8 @@ class MatchingListingWorker @AssistedInject constructor(
             minPrice = pref.minPrice,
             maxPrice = pref.maxPrice,
             location = pref.location,
-            type = pref.type
+            type = pref.type,
+            availabilityDate = pref.availabilityDate
         )
 
         if (matches.isNotEmpty()) {

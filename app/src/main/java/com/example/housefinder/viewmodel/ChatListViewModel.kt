@@ -28,6 +28,12 @@ class ChatListViewModel @Inject constructor(
 
     fun loadConversations(currentUserId: Int) {
         viewModelScope.launch {
+            val currentUser = userRepository.getById(currentUserId)
+            if (currentUser == null) {
+                _conversations.value = emptyList()
+                return@launch
+            }
+
             chatRepository.getConversationList(currentUserId).collectLatest { latestMessages ->
                 val rows = withContext(Dispatchers.IO) {
                     latestMessages.map { message ->

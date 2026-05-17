@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.housefinder.data.repository.ListingImageRepository
 import com.example.housefinder.data.repository.ListingRepository
+import com.example.housefinder.data.repository.UserRepository
 import com.example.housefinder.db.entities.Listing
 import com.example.housefinder.ui.common.HouseDateFormatter
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -18,7 +19,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ProviderListingFormViewModel @Inject constructor(
     private val listingRepository: ListingRepository,
-    private val listingImageRepository: ListingImageRepository
+    private val listingImageRepository: ListingImageRepository,
+    private val userRepository: UserRepository
 ) : ViewModel() {
 
     private val _listing = MutableStateFlow<Listing?>(null)
@@ -50,6 +52,8 @@ class ProviderListingFormViewModel @Inject constructor(
         description: String,
         price: Float,
         location: String,
+        type: String,
+        amenities: String,
         deposit: Int,
         availability: String
     ) {
@@ -58,28 +62,55 @@ class ProviderListingFormViewModel @Inject constructor(
             viewModelScope.launch { _saveResult.emit(SaveResult.Error("Invalid date format")) }
             return
         }
+        val normalizedType = type.trim().uppercase()
+        if (normalizedType !in SUPPORTED_TYPES) {
+            viewModelScope.launch {
+                _saveResult.emit(SaveResult.Error("Type must be one of: ${SUPPORTED_TYPES.joinToString()}"))
+            }
+            return
+        }
+        if (amenities.isBlank()) {
+            viewModelScope.launch { _saveResult.emit(SaveResult.Error("Amenities are required")) }
+            return
+        }
 
         viewModelScope.launch {
             try {
+                val provider = userRepository.getById(providerId)
+                if (provider?.role != "PROVIDER") {
+                    _saveResult.emit(SaveResult.Error("Only providers can manage listings"))
+                    return@launch
+                }
+
                 val distanceToCampus = (Math.random() * 5 + 0.5).toFloat()
                 val imagePathToSave = _coverImage.value
 
                 if (listingId > 0) {
                     val existing = listingRepository.getByIdOnce(listingId)
+                    if (existing == null || existing.providerId != providerId) {
+                        _saveResult.emit(SaveResult.Error("You are not allowed to update this listing"))
+                        return@launch
+                    }
+                    val existingCoverImage = listingImageRepository.getCoverImage(listingId)?.imagePath
+                    if (imagePathToSave.isNullOrBlank() && existingCoverImage.isNullOrBlank()) {
+                        _saveResult.emit(SaveResult.Error("At least one image is required"))
+                        return@launch
+                    }
+
                     val updated = Listing(
                         id = listingId,
                         providerId = providerId,
                         title = title,
-                        description = description.ifBlank { existing?.description ?: "No description" },
+                        description = description.ifBlank { existing.description },
                         price = price,
                         location = location,
-                        type = existing?.type ?: "SHARED",
-                        amenities = existing?.amenities ?: "",
+                        type = normalizedType,
+                        amenities = amenities,
                         depositAmount = deposit,
                         availabilityDate = availabilityStorage,
-                        status = "AVAILABLE",
+                        status = existing.status,
                         distanceToCampusKm = distanceToCampus,
-                        createdAt = existing?.createdAt ?: System.currentTimeMillis()
+                        createdAt = existing.createdAt
                     )
                     listingRepository.update(updated)
                     if (!imagePathToSave.isNullOrBlank()) {
@@ -87,14 +118,18 @@ class ProviderListingFormViewModel @Inject constructor(
                     }
                     _saveResult.emit(SaveResult.Success("Listing updated"))
                 } else {
+                    if (imagePathToSave.isNullOrBlank()) {
+                        _saveResult.emit(SaveResult.Error("At least one image is required"))
+                        return@launch
+                    }
                     val newListing = Listing(
                         providerId = providerId,
                         title = title,
                         description = description.ifBlank { "No description" },
                         price = price,
                         location = location,
-                        type = "SHARED",
-                        amenities = "",
+                        type = normalizedType,
+                        amenities = amenities,
                         depositAmount = deposit,
                         availabilityDate = availabilityStorage,
                         status = "AVAILABLE",
@@ -115,5 +150,9 @@ class ProviderListingFormViewModel @Inject constructor(
     sealed class SaveResult {
         data class Success(val message: String) : SaveResult()
         data class Error(val message: String) : SaveResult()
+    }
+
+    companion object {
+        private val SUPPORTED_TYPES = setOf("EN_SUITE", "SHARED", "STUDIO", "FLAT", "HOUSE")
     }
 }

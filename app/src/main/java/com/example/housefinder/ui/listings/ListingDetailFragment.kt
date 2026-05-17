@@ -40,6 +40,7 @@ class ListingDetailFragment : Fragment(R.layout.fragment_listing_detail) {
         val location = view.findViewById<TextView>(R.id.txt_detail_location)
         val price = view.findViewById<TextView>(R.id.txt_detail_rent_deposit)
         val type = view.findViewById<TextView>(R.id.txt_detail_type)
+        val amenities = view.findViewById<TextView>(R.id.txt_detail_amenities)
         val availability = view.findViewById<TextView>(R.id.txt_detail_availability)
         val coverImage = view.findViewById<ImageView>(R.id.img_detail_cover)
         val reserveButton = view.findViewById<Button>(R.id.btn_reserve)
@@ -47,11 +48,25 @@ class ListingDetailFragment : Fragment(R.layout.fragment_listing_detail) {
         val menuButton = view.findViewById<View>(R.id.btn_menu)
         val sessionManager = SessionManager(requireContext())
         val currentUserId = sessionManager.getUserId()
-        val isProvider = sessionManager.getRole() == "PROVIDER"
+        if (currentUserId == null) {
+            findNavController().navigate(R.id.loginFragment)
+            return
+        }
+
+        var isProvider = false
         var providerIdForListing: Int? = null
 
         ListingImageLoader.bind(coverImage, null)
-        chatButton.visibility = if (isProvider) View.GONE else View.VISIBLE
+        viewLifecycleOwner.lifecycleScope.launch {
+            val sessionUser = withContext(Dispatchers.IO) {
+                AppDatabase.getInstance(requireContext())
+                    .userDao()
+                    .getById(currentUserId)
+            }
+            isProvider = sessionUser?.role == "PROVIDER"
+            chatButton.visibility = if (isProvider) View.GONE else View.VISIBLE
+            reserveButton.visibility = if (isProvider) View.GONE else View.VISIBLE
+        }
 
         menuButton.setOnClickListener {
             (activity as? com.example.housefinder.MainActivity)?.findViewById<androidx.drawerlayout.widget.DrawerLayout>(R.id.drawer_layout)?.openDrawer(androidx.core.view.GravityCompat.START)
@@ -66,6 +81,7 @@ class ListingDetailFragment : Fragment(R.layout.fragment_listing_detail) {
                 location.text = getString(R.string.location_value, listing.location)
                 price.text = getString(R.string.rent_deposit_value, listing.price.toInt(), listing.depositAmount)
                 type.text = getString(R.string.type_value, listing.type)
+                amenities.text = getString(R.string.amenities_value, listing.amenities)
                 availability.text = getString(
                     R.string.availability_from_value,
                     HouseDateFormatter.toDisplayDate(listing.availabilityDate)
@@ -91,6 +107,11 @@ class ListingDetailFragment : Fragment(R.layout.fragment_listing_detail) {
         viewModel.loadListing(listingId)
 
         reserveButton.setOnClickListener {
+            if (isProvider) {
+                Toast.makeText(requireContext(), "Providers cannot reserve listings", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
             if (!reserveButton.isEnabled) {
                 AlertDialog.Builder(requireContext())
                     .setTitle("Listing Unavailable")
@@ -106,9 +127,10 @@ class ListingDetailFragment : Fragment(R.layout.fragment_listing_detail) {
         }
 
         chatButton.setOnClickListener {
+            if (isProvider) return@setOnClickListener
             val userId = currentUserId
             val providerId = providerIdForListing
-            if (userId == null || providerId == null) {
+            if (providerId == null) {
                 Toast.makeText(requireContext(), R.string.chat_open_error, Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }

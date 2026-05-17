@@ -2,7 +2,6 @@ package com.example.housefinder.ui.payment
 
 import android.app.AlertDialog
 import android.os.Bundle
-import android.text.InputFilter
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
@@ -35,14 +34,10 @@ class PaymentFragment : Fragment(R.layout.fragment_payment) {
         val depositAmountText = view.findViewById<TextView>(R.id.txt_summary_deposit)
         val totalAmountText = view.findViewById<TextView>(R.id.txt_summary_total)
         val cardholderInput = view.findViewById<EditText>(R.id.edt_cardholder_name)
-        val cardNumberInput = view.findViewById<EditText>(R.id.edt_card_number)
-        val expiryInput = view.findViewById<EditText>(R.id.edt_expiry_date)
-        val cvvInput = view.findViewById<EditText>(R.id.edt_cvv)
+        val paymentAliasInput = view.findViewById<EditText>(R.id.edt_card_number)
         val closeButton = view.findViewById<View>(R.id.btn_close_payment)
         val cancelButton = view.findViewById<Button>(R.id.btn_cancel_payment)
         val payButton = view.findViewById<Button>(R.id.btn_confirm_payment)
-
-        cardNumberInput.filters = arrayOf(InputFilter.LengthFilter(16))
 
         closeButton.setOnClickListener { findNavController().popBackStack() }
         cancelButton.setOnClickListener { findNavController().popBackStack() }
@@ -83,21 +78,19 @@ class PaymentFragment : Fragment(R.layout.fragment_payment) {
             }
 
             val cardholderName = cardholderInput.text.toString().trim()
-            val cardNumber = cardNumberInput.text.toString().trim()
-            val expiry = expiryInput.text.toString().trim()
-            val cvv = cvvInput.text.toString().trim()
+            val paymentAlias = paymentAliasInput.text.toString().trim().uppercase()
 
-            if (cardholderName.isBlank() || expiry.length < 4 || cvv.length < 3) {
+            if (cardholderName.isBlank() || paymentAlias.isBlank()) {
                 Toast.makeText(requireContext(), R.string.error_payment_fields_required, Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            if (!cardNumber.matches(Regex("^\\d{16}$"))) {
-                Toast.makeText(requireContext(), R.string.error_card_number_invalid, Toast.LENGTH_SHORT).show()
+            if (!SUPPORTED_PAYMENT_ALIASES.contains(paymentAlias)) {
+                Toast.makeText(requireContext(), R.string.error_payment_alias_invalid, Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            viewModel.processPayment(userId, listingId, cardNumber)
+            viewModel.processPayment(userId, listingId, paymentAlias)
         }
     }
 
@@ -107,5 +100,13 @@ class PaymentFragment : Fragment(R.layout.fragment_payment) {
             .setMessage(message)
             .setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
             .show()
+    }
+
+    companion object {
+        private val SUPPORTED_PAYMENT_ALIASES = setOf(
+            "TEST_VISA_01",
+            "TEST_MASTERCARD_01",
+            "TEST_BW_MOBILE_01"
+        )
     }
 }

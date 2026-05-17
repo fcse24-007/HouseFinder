@@ -1,11 +1,14 @@
 package com.example.housefinder.ui.common.notification
 
+import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
+import android.content.pm.PackageManager
 import android.content.Intent
 import android.os.Build
+import androidx.core.content.ContextCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.example.housefinder.MainActivity
@@ -17,6 +20,12 @@ object NotificationHelper {
     private const val CHANNEL_DESC = "Notifications for new house listings matching your preferences"
 
     fun showNotification(context: Context, title: String, message: String) {
+        if (
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+            ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
+        ) {
+            return
+        }
         createNotificationChannel(context)
 
         val intent = Intent(context, MainActivity::class.java).apply {

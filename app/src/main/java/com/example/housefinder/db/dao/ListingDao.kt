@@ -44,6 +44,25 @@ interface ListingDao {
         availabilityDate: String? = null
     ): Flow<List<Listing>>
 
+    @Transaction
+    @Query("""
+        SELECT * FROM listings 
+        WHERE status = 'AVAILABLE'
+        AND (:minPrice IS NULL OR price >= :minPrice)
+        AND (:maxPrice IS NULL OR price <= :maxPrice)
+        AND (:location IS NULL OR :location = '' OR location LIKE '%' || :location || '%')
+        AND (:type IS NULL OR :type = '' OR type = :type)
+        AND (:availabilityDate IS NULL OR :availabilityDate = '' OR availabilityDate <= :availabilityDate)
+        ORDER BY createdAt DESC
+    """)
+    fun filterWithImage(
+        minPrice: Float? = null,
+        maxPrice: Float? = null,
+        location: String? = null,
+        type: String? = null,
+        availabilityDate: String? = null
+    ): Flow<List<com.example.housefinder.db.entities.ListingWithImage>>
+
     @Query("SELECT * FROM listings WHERE id = :id LIMIT 1")
     fun getById(id: Int): Flow<Listing?>
 
@@ -55,6 +74,9 @@ interface ListingDao {
 
     @Query("UPDATE listings SET status = :status WHERE id = :listingId")
     suspend fun updateStatus(listingId: Int, status: String)
+
+    @Query("UPDATE listings SET status = :newStatus WHERE id = :listingId AND status = :expectedStatus")
+    suspend fun updateStatusIfCurrent(listingId: Int, expectedStatus: String, newStatus: String): Int
 
     @Query("""
         SELECT * FROM listings 

@@ -19,6 +19,7 @@ import androidx.work.WorkManager
 import com.example.housefinder.data.repository.UserRepository
 import com.example.housefinder.ui.common.SessionManager
 import com.example.housefinder.worker.MatchingListingWorker
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import java.util.concurrent.TimeUnit
 import dagger.hilt.android.AndroidEntryPoint
@@ -41,6 +42,7 @@ class MainActivity : AppCompatActivity() {
 
         drawerLayout = findViewById(R.id.drawer_layout)
         val navView = findViewById<NavigationView>(R.id.nav_view)
+        val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottom_navigation)
         
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
@@ -72,6 +74,8 @@ class MainActivity : AppCompatActivity() {
                 val isProvider = user?.role == "PROVIDER"
                 navView.menu.findItem(R.id.nav_my_reservations).isVisible = !isProvider
                 navView.menu.findItem(R.id.nav_preferences).isVisible = !isProvider
+                bottomNavigation.menu.findItem(R.id.nav_my_reservations).isVisible = !isProvider
+                bottomNavigation.menu.findItem(R.id.nav_preferences).isVisible = !isProvider
 
                 val headerView = navView.getHeaderView(0)
                 headerView.findViewById<android.widget.TextView>(R.id.nav_header_name).text =
@@ -114,13 +118,48 @@ class MainActivity : AppCompatActivity() {
             true
         }
 
+        bottomNavigation.setOnItemSelectedListener { item ->
+            lifecycleScope.launch {
+                val userId = sessionManager.getUserId()
+                val user = userId?.let { userRepository.getById(it) }
+                if (userId == null || user == null) {
+                    sessionManager.clearSession()
+                    navigateToLoginIfNeeded()
+                    return@launch
+                }
+                val targetDestination = when (item.itemId) {
+                    R.id.nav_home -> if (user.role == "PROVIDER") R.id.providerDashboardFragment else R.id.listingListFragment
+                    R.id.nav_my_reservations -> R.id.myReservationsFragment
+                    R.id.nav_preferences -> R.id.preferencesFragment
+                    R.id.nav_chat -> R.id.chatListFragment
+                    R.id.nav_settings -> R.id.settingsFragment
+                    else -> return@launch
+                }
+                if (navController.currentDestination?.id != targetDestination) {
+                    navController.navigate(targetDestination)
+                }
+            }
+            true
+        }
+
         navController.addOnDestinationChangedListener { _, destination, _ ->
             val isAuth = isAuthDestination(destination.id)
             if (isAuth) {
                 drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+                bottomNavigation.visibility = android.view.View.GONE
             } else {
                 drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
                 applyRoleMenuState()
+                bottomNavigation.visibility = android.view.View.VISIBLE
+                val selectedItem = when (destination.id) {
+                    R.id.listingListFragment, R.id.providerDashboardFragment -> R.id.nav_home
+                    R.id.myReservationsFragment -> R.id.nav_my_reservations
+                    R.id.preferencesFragment -> R.id.nav_preferences
+                    R.id.chatListFragment, R.id.chatThreadFragment -> R.id.nav_chat
+                    R.id.settingsFragment -> R.id.nav_settings
+                    else -> null
+                }
+                selectedItem?.let { bottomNavigation.menu.findItem(it)?.isChecked = true }
             }
         }
 

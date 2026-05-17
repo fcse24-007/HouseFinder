@@ -144,7 +144,7 @@
                 android:layout_marginTop="16dp"
                 app:startIconDrawable="@drawable/ic_location">
 
-                <com.google.android.material.textfield.TextInputEditText
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
                     android:id="@+id/edt_listing_location"
                     style="@style/Widget.HouseFinder.TextInputEditText"
                     android:layout_width="match_parent"
@@ -159,12 +159,12 @@
                 android:layout_marginTop="16dp"
                 app:startIconDrawable="@drawable/ic_home">
 
-                <com.google.android.material.textfield.TextInputEditText
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
                     android:id="@+id/edt_listing_type"
                     style="@style/Widget.HouseFinder.TextInputEditText"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
-                    android:hint="@string/listing_type_hint" />
+                    android:hint="@string/listing_type_dropdown_hint" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -221,11 +221,12 @@
                 android:layout_marginTop="16dp"
                 app:startIconDrawable="@drawable/ic_help">
 
-                <com.google.android.material.textfield.TextInputEditText
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
                     android:id="@+id/edt_listing_availability"
                     style="@style/Widget.HouseFinder.TextInputEditText"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
+                    android:focusable="false"
                     android:hint="@string/available_date" />
             </com.google.android.material.textfield.TextInputLayout>
 

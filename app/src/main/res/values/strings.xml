@@ -37,11 +37,17 @@
     <string name="btn_check_alerts">Check alerts</string>
     <string name="filter_min_price">Min BWP</string>
     <string name="filter_max_price">Max BWP</string>
+    <string name="filter_min_price_label">Minimum price (BWP)</string>
+    <string name="filter_max_price_label">Maximum price (BWP)</string>
     <string name="filter_location">Location (Gaborone area)</string>
+    <string name="filter_location_dropdown">Select location</string>
+    <string name="filter_room_type">Select room type</string>
     <string name="filter_availability_date">Available by (DD-MM-YYYY)</string>
     <string name="filter_apply">Apply filters</string>
     <string name="filter_clear">Clear filters</string>
     <string name="filter_invalid_price">Enter a valid price</string>
+    <string name="filter_invalid_price_min">Enter a valid minimum price (>= 0)</string>
+    <string name="filter_invalid_price_max">Enter a valid maximum price (&gt;= 0)</string>
     <string name="filter_invalid_price_range">Min price cannot exceed max price</string>
     <string name="filter_invalid_date">Use a valid date (DD-MM-YYYY)</string>
     <string name="btn_logout">Logout</string>
@@ -71,6 +77,7 @@
     <string name="available_date">Available from (DD-MM-YYYY)</string>
     <string name="listing_title">Title</string>
     <string name="listing_type_hint">Type (EN_SUITE/SHARED/STUDIO/FLAT/HOUSE)</string>
+    <string name="listing_type_dropdown_hint">Select room type</string>
     <string name="listing_amenities_hint">Amenities (comma-separated)</string>
     <string name="description">Description</string>
     <string name="app_brand_tagline">Find A Safe Place To Call Home!</string>
@@ -130,6 +137,11 @@
     <string name="listing_card_placeholder_price">BWP 3,500</string>
     <string name="listing_card_price_suffix">/mo</string>
     <string name="listing_card_placeholder_type">EN_SUITE</string>
+    <string name="listing_card_placeholder_availability_badge">Available 01-01-2024</string>
+    <string name="listing_status_available">Available</string>
+    <string name="listing_status_reserved">Reserved</string>
+    <string name="listing_available_badge">Available %1$s</string>
+    <string name="view_listing_details">View details</string>
     <string name="reservation_success_icon">✓</string>
     <string name="reservation_success_message">Your reservation has been successfully confirmed!</string>
     <string name="reservation_reference_label">Reference Number</string>
@@ -145,6 +157,8 @@
     <string name="upload_property_image">Upload Property Image</string>
     <string name="property_image_none">No image selected</string>
     <string name="property_image_selected">Selected image ready to upload</string>
+    <string name="listing_image_required">Add at least one image before saving this listing</string>
+    <string name="listing_type_required">Please select a room type</string>
     <string name="back">Back</string>
     <string name="send">Send</string>
     <string name="chat_button_label">Chat with Landlord</string>

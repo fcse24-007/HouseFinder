@@ -1,7 +1,11 @@
 package com.example.housefinder.ui.listings
 
+import android.app.DatePickerDialog
 import android.os.Bundle
+import android.text.InputType
 import android.view.View
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -13,11 +17,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.housefinder.R
 import com.example.housefinder.ui.common.HouseDateFormatter
+import com.example.housefinder.ui.common.ListingInputOptions
 import com.example.housefinder.ui.common.SessionManager
 import com.example.housefinder.viewmodel.ListingListViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.util.Calendar
 
 @AndroidEntryPoint
 class ListingListFragment : Fragment(R.layout.fragment_listing_list) {
@@ -41,8 +47,34 @@ class ListingListFragment : Fragment(R.layout.fragment_listing_list) {
         val clearFiltersButton = view.findViewById<Button>(R.id.btn_clear_filters)
         val minPriceInput = view.findViewById<EditText>(R.id.edt_filter_min_price)
         val maxPriceInput = view.findViewById<EditText>(R.id.edt_filter_max_price)
-        val locationInput = view.findViewById<EditText>(R.id.edt_filter_location)
-        val availabilityInput = view.findViewById<EditText>(R.id.edt_filter_availability)
+        val locationInput = view.findViewById<AutoCompleteTextView>(R.id.edt_filter_location)
+        val typeInput = view.findViewById<AutoCompleteTextView>(R.id.edt_filter_type)
+        val availabilityInput = view.findViewById<AutoCompleteTextView>(R.id.edt_filter_availability)
+
+        locationInput.setAdapter(
+            ArrayAdapter(
+                requireContext(),
+                android.R.layout.simple_dropdown_item_1line,
+                ListingInputOptions.gaboroneAreas
+            )
+        )
+        locationInput.setRawInputType(InputType.TYPE_NULL)
+        locationInput.setOnClickListener { locationInput.showDropDown() }
+        typeInput.setAdapter(
+            ArrayAdapter(
+                requireContext(),
+                android.R.layout.simple_dropdown_item_1line,
+                ListingInputOptions.roomTypeLabels
+            )
+        )
+        typeInput.setRawInputType(InputType.TYPE_NULL)
+        typeInput.setOnClickListener { typeInput.showDropDown() }
+        availabilityInput.setRawInputType(InputType.TYPE_NULL)
+        availabilityInput.setOnClickListener {
+            showDatePicker { selectedDate ->
+                availabilityInput.setText(selectedDate, false)
+            }
+        }
 
         menuButton.setOnClickListener {
             (activity as? com.example.housefinder.MainActivity)
@@ -86,11 +118,19 @@ class ListingListFragment : Fragment(R.layout.fragment_listing_list) {
             val minPrice = parseOptionalFloat(minPriceInput.text.toString())
             val maxPrice = parseOptionalFloat(maxPriceInput.text.toString())
             if (minPriceInput.text.toString().isNotBlank() && minPrice == null) {
-                Toast.makeText(requireContext(), R.string.filter_invalid_price, Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), R.string.filter_invalid_price_min, Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
             if (maxPriceInput.text.toString().isNotBlank() && maxPrice == null) {
-                Toast.makeText(requireContext(), R.string.filter_invalid_price, Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), R.string.filter_invalid_price_max, Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            if (minPrice != null && minPrice < 0f) {
+                Toast.makeText(requireContext(), R.string.filter_invalid_price_min, Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            if (maxPrice != null && maxPrice < 0f) {
+                Toast.makeText(requireContext(), R.string.filter_invalid_price_max, Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
             if (minPrice != null && maxPrice != null && minPrice > maxPrice) {
@@ -109,10 +149,12 @@ class ListingListFragment : Fragment(R.layout.fragment_listing_list) {
                 return@setOnClickListener
             }
 
+            val selectedTypeLabel = typeInput.text.toString().trim().takeIf { it.isNotBlank() }
             viewModel.applyFilters(
                 minPrice = minPrice,
                 maxPrice = maxPrice,
                 location = locationInput.text.toString().trim().takeIf { it.isNotBlank() },
+                type = selectedTypeLabel?.let { ListingInputOptions.toStorageType(it) },
                 availabilityDate = availabilityDate
             )
         }
@@ -121,6 +163,7 @@ class ListingListFragment : Fragment(R.layout.fragment_listing_list) {
             minPriceInput.text?.clear()
             maxPriceInput.text?.clear()
             locationInput.text?.clear()
+            typeInput.text?.clear()
             availabilityInput.text?.clear()
             viewModel.clearFilters()
         }
@@ -134,6 +177,20 @@ class ListingListFragment : Fragment(R.layout.fragment_listing_list) {
     private fun parseOptionalFloat(value: String): Float? {
         val trimmed = value.trim()
         return if (trimmed.isBlank()) null else trimmed.toFloatOrNull()
+    }
+
+    private fun showDatePicker(onDateSelected: (String) -> Unit) {
+        val calendar = Calendar.getInstance()
+        DatePickerDialog(
+            requireContext(),
+            { _, year, month, dayOfMonth ->
+                val selected = String.format("%02d-%02d-%04d", dayOfMonth, month + 1, year)
+                onDateSelected(selected)
+            },
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
+        ).show()
     }
 
     private fun showMatchedListingsDialog(matches: List<com.example.housefinder.db.entities.Listing>) {

@@ -40,6 +40,7 @@ class ListingListViewModel @Inject constructor(
                 minPrice = filter.minPrice,
                 maxPrice = filter.maxPrice,
                 location = filter.location,
+                type = filter.type,
                 availabilityDate = filter.availabilityDate
             )
         }
@@ -66,6 +67,7 @@ class ListingListViewModel @Inject constructor(
         minPrice: Float? = null,
         maxPrice: Float? = null,
         location: String? = null,
+        type: String? = null,
         availabilityDate: String? = null
     ) {
         activeFilter.update {
@@ -73,6 +75,7 @@ class ListingListViewModel @Inject constructor(
                 minPrice = minPrice,
                 maxPrice = maxPrice,
                 location = location,
+                type = type,
                 availabilityDate = availabilityDate
             )
         }
@@ -115,6 +118,7 @@ class ListingListViewModel @Inject constructor(
         val minPrice: Float? = null,
         val maxPrice: Float? = null,
         val location: String? = null,
+        val type: String? = null,
         val availabilityDate: String? = null
     )
 }

@@ -12,6 +12,8 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.housefinder.R
 import com.example.housefinder.db.entities.AppDatabase
 import com.example.housefinder.db.entities.conversationIdFor
@@ -43,6 +45,7 @@ class ListingDetailFragment : Fragment(R.layout.fragment_listing_detail) {
         val amenities = view.findViewById<TextView>(R.id.txt_detail_amenities)
         val availability = view.findViewById<TextView>(R.id.txt_detail_availability)
         val coverImage = view.findViewById<ImageView>(R.id.img_detail_cover)
+        val imageCarousel = view.findViewById<RecyclerView>(R.id.rv_detail_image_carousel)
         val reserveButton = view.findViewById<Button>(R.id.btn_reserve)
         val chatButton = view.findViewById<Button>(R.id.btn_chat_landlord)
         val menuButton = view.findViewById<View>(R.id.btn_menu)
@@ -55,8 +58,25 @@ class ListingDetailFragment : Fragment(R.layout.fragment_listing_detail) {
 
         var isProvider = false
         var providerIdForListing: Int? = null
+        val carouselAdapter = ListingImageCarouselAdapter()
+
+        imageCarousel.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        imageCarousel.adapter = carouselAdapter
 
         ListingImageLoader.bind(coverImage, null)
+        viewLifecycleOwner.lifecycleScope.launch {
+            AppDatabase.getInstance(requireContext())
+                .listingImageDao()
+                .getForListing(listingId)
+                .collectLatest { images ->
+                    val coverPath = images.firstOrNull()?.imagePath
+                    ListingImageLoader.bind(coverImage, coverPath)
+                    val carouselItems = if (images.size > 1) images.drop(1) else emptyList()
+                    carouselAdapter.submitList(carouselItems)
+                    imageCarousel.visibility = if (carouselItems.isEmpty()) View.GONE else View.VISIBLE
+                }
+        }
+
         viewLifecycleOwner.lifecycleScope.launch {
             val sessionUser = withContext(Dispatchers.IO) {
                 AppDatabase.getInstance(requireContext())
@@ -87,14 +107,6 @@ class ListingDetailFragment : Fragment(R.layout.fragment_listing_detail) {
                     HouseDateFormatter.toDisplayDate(listing.availabilityDate)
                 )
                 providerIdForListing = listing.providerId
-                
-                val imagePath = withContext(Dispatchers.IO) {
-                    AppDatabase.getInstance(requireContext())
-                        .listingImageDao()
-                        .getCoverImage(listing.id)
-                        ?.imagePath
-                }
-                ListingImageLoader.bind(coverImage, imagePath)
 
                 // Update reserve button state based on listing availability
                 reserveButton.isEnabled = listing.status == "AVAILABLE"

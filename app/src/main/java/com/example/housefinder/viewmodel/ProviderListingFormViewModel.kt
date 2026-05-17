@@ -7,6 +7,7 @@ import com.example.housefinder.data.repository.ListingRepository
 import com.example.housefinder.data.repository.UserRepository
 import com.example.housefinder.db.entities.Listing
 import com.example.housefinder.ui.common.HouseDateFormatter
+import com.example.housefinder.ui.common.ListingInputOptions
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -63,9 +64,13 @@ class ProviderListingFormViewModel @Inject constructor(
             return
         }
         val normalizedType = type.trim().uppercase()
-        if (normalizedType !in SUPPORTED_TYPES) {
+        if (normalizedType !in ListingInputOptions.supportedRoomTypes) {
             viewModelScope.launch {
-                _saveResult.emit(SaveResult.Error("Type must be one of: ${SUPPORTED_TYPES.joinToString()}"))
+                _saveResult.emit(
+                    SaveResult.Error(
+                        "Type must be one of: ${ListingInputOptions.supportedRoomTypes.joinToString()}"
+                    )
+                )
             }
             return
         }
@@ -152,7 +157,4 @@ class ProviderListingFormViewModel @Inject constructor(
         data class Error(val message: String) : SaveResult()
     }
 
-    companion object {
-        private val SUPPORTED_TYPES = setOf("EN_SUITE", "SHARED", "STUDIO", "FLAT", "HOUSE")
-    }
 }

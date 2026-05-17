@@ -89,20 +89,60 @@
                     android:textColor="@color/register_text_light"
                     android:textSize="12sp" />
 
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
                 <TextView
-                    android:id="@+id/txt_listing_type"
+                    android:id="@+id/txt_listing_type_badge"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
                     android:background="@drawable/bg_role_pill_inactive"
-                    android:paddingHorizontal="12dp"
+                    android:paddingHorizontal="10dp"
                     android:paddingVertical="4dp"
                     android:text="@string/listing_card_placeholder_type"
                     android:textColor="@color/register_text_dark"
                     android:textSize="11sp"
                     android:textStyle="bold" />
-            </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/txt_listing_availability_badge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/bg_role_pill_inactive"
+                    android:paddingHorizontal="10dp"
+                    android:paddingVertical="4dp"
+                    android:text="@string/listing_card_placeholder_availability_badge"
+                    android:textColor="@color/register_text_dark"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/txt_listing_status_badge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/bg_role_pill_active"
+                    android:paddingHorizontal="10dp"
+                    android:paddingVertical="4dp"
+                    android:text="@string/listing_status_available"
+                    android:textColor="@color/white"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_view_listing_details"
+                style="@style/Widget.HouseFinder.Button"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:layout_marginTop="12dp"
+                android:text="@string/view_listing_details" />
         </LinearLayout>
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

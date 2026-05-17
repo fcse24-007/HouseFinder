@@ -3,21 +3,17 @@ package com.example.housefinder.ui.listings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.lifecycle.findViewTreeLifecycleOwner
-import androidx.lifecycle.lifecycleScope
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.housefinder.R
-import com.example.housefinder.db.entities.AppDatabase
-import com.example.housefinder.db.entities.Listing
 import com.example.housefinder.ui.common.ListingImageLoader
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import com.example.housefinder.ui.common.ListingInputOptions
+import com.example.housefinder.ui.common.HouseDateFormatter
 
 import com.example.housefinder.db.entities.ListingWithImage
 
@@ -41,7 +37,10 @@ class ListingAdapter(
         private val title: TextView = itemView.findViewById(R.id.txt_listing_title)
         private val location: TextView = itemView.findViewById(R.id.txt_listing_location)
         private val price: TextView = itemView.findViewById(R.id.txt_listing_price)
-        private val type: TextView = itemView.findViewById(R.id.txt_listing_type)
+        private val typeBadge: TextView = itemView.findViewById(R.id.txt_listing_type_badge)
+        private val availabilityBadge: TextView = itemView.findViewById(R.id.txt_listing_availability_badge)
+        private val statusBadge: TextView = itemView.findViewById(R.id.txt_listing_status_badge)
+        private val viewDetailsButton: Button = itemView.findViewById(R.id.btn_view_listing_details)
         private val coverImage: ImageView = itemView.findViewById(R.id.img_listing_cover)
 
         fun bind(item: ListingWithImage) {
@@ -49,11 +48,31 @@ class ListingAdapter(
             title.text = listing.title
             location.text = listing.location
             price.text = "BWP ${listing.price.toInt()} / month"
-            type.text = listing.type
+            typeBadge.text = ListingInputOptions.toDisplayType(listing.type)
+            availabilityBadge.text = itemView.context.getString(
+                R.string.listing_available_badge,
+                HouseDateFormatter.toDisplayDate(listing.availabilityDate)
+            )
+            val isReserved = listing.status == "RESERVED"
+            statusBadge.text = if (isReserved) {
+                itemView.context.getString(R.string.listing_status_reserved)
+            } else {
+                itemView.context.getString(R.string.listing_status_available)
+            }
+            statusBadge.setBackgroundResource(
+                if (isReserved) R.drawable.bg_role_pill_inactive else R.drawable.bg_role_pill_active
+            )
+            statusBadge.setTextColor(
+                ContextCompat.getColor(
+                    itemView.context,
+                    if (isReserved) R.color.register_text_dark else R.color.white
+                )
+            )
 
             ListingImageLoader.bind(coverImage, item.coverImagePath)
 
             itemView.setOnClickListener { onClick(item) }
+            viewDetailsButton.setOnClickListener { onClick(item) }
         }
     }
 
@@ -67,4 +86,3 @@ class ListingAdapter(
         }
     }
 }
-

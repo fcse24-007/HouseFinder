@@ -1,9 +1,12 @@
 package com.example.housefinder.ui.provider
 
+import android.app.DatePickerDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
@@ -20,11 +23,13 @@ import com.example.housefinder.R
 import com.example.housefinder.db.entities.AppDatabase
 import com.example.housefinder.ui.common.HouseDateFormatter
 import com.example.housefinder.ui.common.ListingImageLoader
+import com.example.housefinder.ui.common.ListingInputOptions
 import com.example.housefinder.ui.common.SessionManager
 import com.example.housefinder.viewmodel.ProviderListingFormViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.util.Calendar
 
 @AndroidEntryPoint
 class ProviderListingFormFragment : Fragment(R.layout.fragment_provider_listing_form) {
@@ -72,14 +77,39 @@ class ProviderListingFormFragment : Fragment(R.layout.fragment_provider_listing_
         val titleInput = view.findViewById<EditText>(R.id.edt_listing_title)
         val descriptionInput = view.findViewById<EditText>(R.id.edt_description)
         val priceInput = view.findViewById<EditText>(R.id.edt_listing_price)
-        val locationInput = view.findViewById<EditText>(R.id.edt_listing_location)
-        val typeInput = view.findViewById<EditText>(R.id.edt_listing_type)
+        val locationInput = view.findViewById<AutoCompleteTextView>(R.id.edt_listing_location)
+        val typeInput = view.findViewById<AutoCompleteTextView>(R.id.edt_listing_type)
         val amenitiesInput = view.findViewById<EditText>(R.id.edt_listing_amenities)
         val depositInput = view.findViewById<EditText>(R.id.edt_listing_deposit)
-        val availabilityInput = view.findViewById<EditText>(R.id.edt_listing_availability)
+        val availabilityInput = view.findViewById<AutoCompleteTextView>(R.id.edt_listing_availability)
         val uploadButton = view.findViewById<Button>(R.id.btnUpload)
         val saveButton = view.findViewById<Button>(R.id.btn_save_listing)
         val backButton = view.findViewById<View>(R.id.btn_form_back)
+
+        locationInput.setAdapter(
+            ArrayAdapter(
+                requireContext(),
+                android.R.layout.simple_dropdown_item_1line,
+                ListingInputOptions.gaboroneAreas
+            )
+        )
+        locationInput.keyListener = null
+        locationInput.setOnClickListener { locationInput.showDropDown() }
+        typeInput.setAdapter(
+            ArrayAdapter(
+                requireContext(),
+                android.R.layout.simple_dropdown_item_1line,
+                ListingInputOptions.roomTypeLabels
+            )
+        )
+        typeInput.keyListener = null
+        typeInput.setOnClickListener { typeInput.showDropDown() }
+        availabilityInput.keyListener = null
+        availabilityInput.setOnClickListener {
+            showDatePicker { selectedDate ->
+                availabilityInput.setText(selectedDate, false)
+            }
+        }
 
         uploadButton.setOnClickListener {
             imagePicker.launch(arrayOf("image/*"))
@@ -91,17 +121,18 @@ class ProviderListingFormFragment : Fragment(R.layout.fragment_provider_listing_
                     titleInput.setText(listing.title)
                     descriptionInput.setText(listing.description)
                     priceInput.setText(listing.price.toInt().toString())
-                    locationInput.setText(listing.location)
-                    typeInput.setText(listing.type)
+                    locationInput.setText(listing.location, false)
+                    typeInput.setText(ListingInputOptions.toDisplayType(listing.type), false)
                     amenitiesInput.setText(listing.amenities)
                     depositInput.setText(listing.depositAmount.toString())
-                    availabilityInput.setText(HouseDateFormatter.toDisplayDate(listing.availabilityDate))
+                    availabilityInput.setText(HouseDateFormatter.toDisplayDate(listing.availabilityDate), false)
                 }
             }
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.coverImage.collectLatest { path ->
+                saveButton.isEnabled = !path.isNullOrBlank()
                 updateSelectedImageUi(path)
             }
         }
@@ -127,7 +158,8 @@ class ProviderListingFormFragment : Fragment(R.layout.fragment_provider_listing_
             val description = descriptionInput.text.toString().trim()
             val priceStr = priceInput.text.toString().trim()
             val location = locationInput.text.toString().trim()
-            val type = typeInput.text.toString().trim()
+            val typeLabel = typeInput.text.toString().trim()
+            val type = ListingInputOptions.toStorageType(typeLabel)
             val amenities = amenitiesInput.text.toString().trim()
             val depositStr = depositInput.text.toString().trim()
             val availability = availabilityInput.text.toString().trim()
@@ -138,12 +170,16 @@ class ProviderListingFormFragment : Fragment(R.layout.fragment_provider_listing_
                 Toast.makeText(requireContext(), "Basic fields are required", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-            if (type.isBlank()) {
-                Toast.makeText(requireContext(), "Type is required", Toast.LENGTH_SHORT).show()
+            if (type == null) {
+                Toast.makeText(requireContext(), R.string.listing_type_required, Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
             if (amenities.isBlank()) {
                 Toast.makeText(requireContext(), "Amenities are required", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            if (viewModel.coverImage.value.isNullOrBlank()) {
+                Toast.makeText(requireContext(), R.string.listing_image_required, Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
@@ -194,5 +230,19 @@ class ProviderListingFormFragment : Fragment(R.layout.fragment_provider_listing_
                 getString(R.string.property_image_none)
             }
         }
+    }
+
+    private fun showDatePicker(onDateSelected: (String) -> Unit) {
+        val calendar = Calendar.getInstance()
+        DatePickerDialog(
+            requireContext(),
+            { _, year, month, dayOfMonth ->
+                val selected = String.format("%02d-%02d-%04d", dayOfMonth, month + 1, year)
+                onDateSelected(selected)
+            },
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
+        ).show()
     }
 }

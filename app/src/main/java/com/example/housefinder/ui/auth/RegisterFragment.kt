@@ -13,12 +13,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.housefinder.R
-import com.example.housefinder.db.entities.AppDatabase
 import com.example.housefinder.db.entities.GABORONE_UNIVERSITIES
-import com.example.housefinder.db.entities.User
-import com.example.housefinder.db.entities.hashPassword
 import com.example.housefinder.ui.common.SessionManager
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 
 import androidx.fragment.app.viewModels
@@ -38,7 +34,6 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
         val emailInput = view.findViewById<EditText>(R.id.edt_email)
         val passwordInput = view.findViewById<EditText>(R.id.edt_password)
         val studentIdInput = view.findViewById<EditText>(R.id.edt_student_id)
-        val roleSpinner = view.findViewById<Spinner>(R.id.spinner_role)
         val universitySpinner = view.findViewById<Spinner>(R.id.spinner_university)
         val studentRoleButton = view.findViewById<Button>(R.id.btn_role_student_register)
         val providerRoleButton = view.findViewById<Button>(R.id.btn_role_provider_register)
@@ -50,8 +45,7 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
         val studentFieldsContainer = view.findViewById<View>(R.id.container_student_fields)
         val landlordFieldsContainer = view.findViewById<View>(R.id.container_landlord_fields)
 
-        val roles = listOf("STUDENT", "PROVIDER")
-        roleSpinner.adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, roles)
+        var selectedRole = "STUDENT"
 
         val universities = GABORONE_UNIVERSITIES.map { it.name }
         universitySpinner.adapter = ArrayAdapter(
@@ -61,6 +55,7 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
         )
 
         fun updateRoleUi(isStudent: Boolean) {
+            selectedRole = if (isStudent) "STUDENT" else "PROVIDER"
             studentFieldsContainer.visibility = if (isStudent) View.VISIBLE else View.GONE
             landlordFieldsContainer.visibility = if (isStudent) View.GONE else View.VISIBLE
 
@@ -108,22 +103,14 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
             )
         }
 
-        roleSpinner.onItemSelectedListener = object : android.widget.AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: android.widget.AdapterView<*>?, view: View?, position: Int, id: Long) {
-                updateRoleUi(roles[position] == "STUDENT")
-            }
-
-            override fun onNothingSelected(parent: android.widget.AdapterView<*>?) = Unit
-        }
-
         studentRoleButton.setOnClickListener {
-            roleSpinner.setSelection(0)
             updateRoleUi(true)
         }
         providerRoleButton.setOnClickListener {
-            roleSpinner.setSelection(1)
             updateRoleUi(false)
         }
+
+        updateRoleUi(true)
 
         goLoginButton.setOnClickListener { findNavController().popBackStack() }
 
@@ -131,7 +118,7 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
             val name = nameInput.text.toString().trim()
             val email = emailInput.text.toString().trim()
             val password = passwordInput.text.toString().trim()
-            val role = roleSpinner.selectedItem.toString()
+            val role = selectedRole
             val studentIdValue = studentIdInput.text.toString().trim()
             val university = universitySpinner.selectedItem?.toString().orEmpty()
 

@@ -98,12 +98,6 @@
                 android:textColor="@color/register_text_light"
                 android:textSize="12sp" />
 
-            <Spinner
-                android:id="@+id/spinner_role"
-                android:layout_width="1dp"
-                android:layout_height="1dp"
-                android:visibility="gone" />
-
             <TextView
                 android:id="@+id/txt_role_selected"
                 android:layout_width="wrap_content"

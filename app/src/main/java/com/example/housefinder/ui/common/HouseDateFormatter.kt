@@ -1,26 +1,31 @@
 package com.example.housefinder.ui.common
 
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
+import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Locale
 
 object HouseDateFormatter {
-    private val storageFormatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE
-    private val displayFormatter: DateTimeFormatter =
-        DateTimeFormatter.ofPattern("dd-MM-uuuu", Locale.getDefault())
+    private const val STORAGE_PATTERN = "yyyy-MM-dd"
+    private const val DISPLAY_PATTERN = "dd-MM-yyyy"
+
+    private fun formatter(pattern: String): SimpleDateFormat =
+        SimpleDateFormat(pattern, Locale.getDefault()).apply { isLenient = false }
 
     fun toDisplayDate(storageDate: String?): String {
         if (storageDate.isNullOrBlank()) return ""
-        return runCatching { LocalDate.parse(storageDate, storageFormatter).format(displayFormatter) }
-            .recoverCatching { LocalDate.parse(storageDate, displayFormatter).format(displayFormatter) }
-            .getOrElse { storageDate }
+        return parse(storageDate, STORAGE_PATTERN)?.let { formatter(DISPLAY_PATTERN).format(it) }
+            ?: parse(storageDate, DISPLAY_PATTERN)?.let { formatter(DISPLAY_PATTERN).format(it) }
+            ?: storageDate
     }
 
     fun toStorageDate(userInput: String): String? {
         val trimmed = userInput.trim()
         if (trimmed.isEmpty()) return null
-        return runCatching { LocalDate.parse(trimmed, displayFormatter).format(storageFormatter) }
-            .recoverCatching { LocalDate.parse(trimmed, storageFormatter).format(storageFormatter) }
-            .getOrNull()
+        return parse(trimmed, DISPLAY_PATTERN)?.let { formatter(STORAGE_PATTERN).format(it) }
+            ?: parse(trimmed, STORAGE_PATTERN)?.let { formatter(STORAGE_PATTERN).format(it) }
+    }
+
+    private fun parse(value: String, pattern: String): Date? {
+        return runCatching { formatter(pattern).parse(value) }.getOrNull()
     }
 }

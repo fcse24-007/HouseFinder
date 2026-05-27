@@ -19,14 +19,18 @@ class ListingRepository @Inject constructor(private val listingDao: ListingDao) 
         maxPrice: Float? = null,
         location: String? = null,
         type: String? = null,
-        availabilityDate: String? = null
+        availabilityDate: String? = null,
+        keyword: String? = null,
+        sortOrder: String = "NEWEST"
     ): Flow<List<com.example.housefinder.db.entities.ListingWithImage>> =
         listingDao.filterWithImage(
             minPrice = minPrice,
             maxPrice = maxPrice,
             location = location,
             type = type,
-            availabilityDate = availabilityDate
+            availabilityDate = availabilityDate,
+            keyword = keyword,
+            sortOrder = sortOrder
         )
 
     fun getById(id: Int): Flow<Listing?> = listingDao.getById(id)

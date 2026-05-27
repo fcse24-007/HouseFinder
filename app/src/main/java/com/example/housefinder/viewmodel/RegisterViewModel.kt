@@ -35,6 +35,10 @@ class RegisterViewModel @Inject constructor(private val userRepository: UserRepo
                     return@launch
                 }
 
+                if (role == "STUDENT") {
+                    // No registration cap for students.
+                }
+
                 val generatedStudentId = if (role == "PROVIDER") {
                     generateNextProviderId()
                 } else {

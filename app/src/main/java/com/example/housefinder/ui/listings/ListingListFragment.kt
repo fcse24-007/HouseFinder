@@ -1,6 +1,5 @@
 package com.example.housefinder.ui.listings
 
-import android.app.DatePickerDialog
 import android.os.Bundle
 import android.text.InputType
 import android.view.View
@@ -8,9 +7,11 @@ import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,16 +20,19 @@ import com.example.housefinder.R
 import com.example.housefinder.ui.common.HouseDateFormatter
 import com.example.housefinder.ui.common.ListingInputOptions
 import com.example.housefinder.ui.common.SessionManager
+import com.example.housefinder.ui.common.notification.NotificationHelper
 import com.example.housefinder.viewmodel.ListingListViewModel
+import com.example.housefinder.db.entities.ListingWithImage
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import java.util.Calendar
 
 @AndroidEntryPoint
 class ListingListFragment : Fragment(R.layout.fragment_listing_list) {
 
-    private val viewModel: ListingListViewModel by viewModels()
+    private val viewModel: ListingListViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -41,45 +45,25 @@ class ListingListFragment : Fragment(R.layout.fragment_listing_list) {
         }
 
         val recycler = view.findViewById<RecyclerView>(R.id.rv_listings)
-        val menuButton = view.findViewById<View>(R.id.btn_menu)
-        val alertsButton = view.findViewById<Button>(R.id.btn_check_alerts)
-        val applyFiltersButton = view.findViewById<Button>(R.id.btn_apply_filters)
-        val clearFiltersButton = view.findViewById<Button>(R.id.btn_clear_filters)
-        val minPriceInput = view.findViewById<EditText>(R.id.edt_filter_min_price)
-        val maxPriceInput = view.findViewById<EditText>(R.id.edt_filter_max_price)
-        val locationInput = view.findViewById<AutoCompleteTextView>(R.id.edt_filter_location)
-        val typeInput = view.findViewById<AutoCompleteTextView>(R.id.edt_filter_type)
-        val availabilityInput = view.findViewById<AutoCompleteTextView>(R.id.edt_filter_availability)
+        val toolbar = view.findViewById<com.google.android.material.appbar.MaterialToolbar>(R.id.toolbar)
+        val chipGroup = view.findViewById<ChipGroup>(R.id.chip_group_filters)
+        val emptyState = view.findViewById<View>(R.id.layout_empty_listings)
+        val emptyTitle = view.findViewById<TextView>(R.id.txt_empty_listings_title)
+        val emptySubtitle = view.findViewById<TextView>(R.id.txt_empty_listings_subtitle)
+        val emptyAction = view.findViewById<Button>(R.id.btn_empty_listings_action)
 
-        locationInput.setAdapter(
-            ArrayAdapter(
-                requireContext(),
-                android.R.layout.simple_dropdown_item_1line,
-                ListingInputOptions.gaboroneAreas
-            )
-        )
-        locationInput.setRawInputType(InputType.TYPE_NULL)
-        locationInput.setOnClickListener { locationInput.showDropDown() }
-        typeInput.setAdapter(
-            ArrayAdapter(
-                requireContext(),
-                android.R.layout.simple_dropdown_item_1line,
-                ListingInputOptions.roomTypeLabels
-            )
-        )
-        typeInput.setRawInputType(InputType.TYPE_NULL)
-        typeInput.setOnClickListener { typeInput.showDropDown() }
-        availabilityInput.setRawInputType(InputType.TYPE_NULL)
-        availabilityInput.setOnClickListener {
-            showDatePicker { selectedDate ->
-                availabilityInput.setText(selectedDate, false)
+        toolbar.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.action_filters -> {
+                    findNavController().navigate(R.id.action_listingListFragment_to_listingFiltersFragment)
+                    true
+                }
+                R.id.action_search -> {
+                    findNavController().navigate(R.id.action_listingListFragment_to_listingSearchSortFragment)
+                    true
+                }
+                else -> false
             }
-        }
-
-        menuButton.setOnClickListener {
-            (activity as? com.example.housefinder.MainActivity)
-                ?.findViewById<androidx.drawerlayout.widget.DrawerLayout>(R.id.drawer_layout)
-                ?.openDrawer(androidx.core.view.GravityCompat.START)
         }
 
         val adapter = ListingAdapter { item ->
@@ -91,8 +75,49 @@ class ListingListFragment : Fragment(R.layout.fragment_listing_list) {
         recycler.layoutManager = LinearLayoutManager(requireContext())
         recycler.adapter = adapter
 
+        var latestFilter = viewModel.currentFilter.value
+        var latestListings: List<ListingWithImage> = emptyList()
+
+        fun hasActiveFilters(filter: ListingListViewModel.ListingFilter): Boolean {
+            return filter.minPrice != null ||
+                filter.maxPrice != null ||
+                !filter.location.isNullOrBlank() ||
+                !filter.type.isNullOrBlank() ||
+                !filter.availabilityDate.isNullOrBlank() ||
+                !filter.keyword.isNullOrBlank()
+        }
+
+        fun renderEmptyState() {
+            val isEmpty = latestListings.isEmpty()
+            emptyState.visibility = if (isEmpty) View.VISIBLE else View.GONE
+            recycler.visibility = if (isEmpty) View.GONE else View.VISIBLE
+            if (!isEmpty) {
+                return
+            }
+
+            if (hasActiveFilters(latestFilter)) {
+                emptyTitle.setText(R.string.empty_listings_title_filtered)
+                emptySubtitle.setText(R.string.empty_listings_subtitle_filtered)
+                emptyAction.text = getString(R.string.filter_clear)
+                emptyAction.setOnClickListener {
+                    viewModel.resetAllFilters()
+                }
+            } else {
+                emptyTitle.setText(R.string.empty_listings_title)
+                emptySubtitle.setText(R.string.empty_listings_subtitle)
+                emptyAction.text = getString(R.string.start_searching)
+                emptyAction.setOnClickListener {
+                    findNavController().navigate(R.id.action_listingListFragment_to_listingFiltersFragment)
+                }
+            }
+        }
+
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.listings.collectLatest { adapter.submitList(it) }
+            viewModel.listings.collectLatest { listings ->
+                latestListings = listings
+                adapter.submitList(listings)
+                renderEmptyState()
+            }
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -104,6 +129,16 @@ class ListingListFragment : Fragment(R.layout.fragment_listing_list) {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.alertMatches.collectLatest { matches ->
                 session.setLastAlertCheck(userId, System.currentTimeMillis())
+                val notificationMessage = if (matches.size == 1) {
+                    "Found a new match: ${matches[0].title}"
+                } else {
+                    "Found ${matches.size} new matches for your preferences!"
+                }
+                NotificationHelper.showNotification(
+                    requireContext(),
+                    "New House Matches",
+                    notificationMessage
+                )
                 showMatchedListingsDialog(matches)
             }
         }
@@ -114,83 +149,22 @@ class ListingListFragment : Fragment(R.layout.fragment_listing_list) {
             }
         }
 
-        applyFiltersButton.setOnClickListener {
-            val minPrice = parseOptionalFloat(minPriceInput.text.toString())
-            val maxPrice = parseOptionalFloat(maxPriceInput.text.toString())
-            if (minPriceInput.text.toString().isNotBlank() && minPrice == null) {
-                Toast.makeText(requireContext(), R.string.filter_invalid_price_min, Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.currentFilter.collectLatest { filter ->
+                latestFilter = filter
+                renderFilterChips(
+                    chipGroup = chipGroup,
+                    filter = filter,
+                    onClearAll = {
+                        viewModel.resetAllFilters()
+                    }
+                )
+                renderEmptyState()
             }
-            if (maxPriceInput.text.toString().isNotBlank() && maxPrice == null) {
-                Toast.makeText(requireContext(), R.string.filter_invalid_price_max, Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-            if (minPrice != null && minPrice < 0f) {
-                Toast.makeText(requireContext(), R.string.filter_invalid_price_min, Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-            if (maxPrice != null && maxPrice < 0f) {
-                Toast.makeText(requireContext(), R.string.filter_invalid_price_max, Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-            if (minPrice != null && maxPrice != null && minPrice > maxPrice) {
-                Toast.makeText(requireContext(), R.string.filter_invalid_price_range, Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-
-            val availabilityText = availabilityInput.text.toString().trim()
-            val availabilityDate = if (availabilityText.isBlank()) {
-                null
-            } else {
-                HouseDateFormatter.toStorageDate(availabilityText)
-            }
-            if (availabilityText.isNotBlank() && availabilityDate == null) {
-                Toast.makeText(requireContext(), R.string.filter_invalid_date, Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-
-            val selectedTypeLabel = typeInput.text.toString().trim().takeIf { it.isNotBlank() }
-            viewModel.applyFilters(
-                minPrice = minPrice,
-                maxPrice = maxPrice,
-                location = locationInput.text.toString().trim().takeIf { it.isNotBlank() },
-                type = selectedTypeLabel?.let { ListingInputOptions.toStorageType(it) },
-                availabilityDate = availabilityDate
-            )
         }
 
-        clearFiltersButton.setOnClickListener {
-            minPriceInput.text?.clear()
-            maxPriceInput.text?.clear()
-            locationInput.text?.clear()
-            typeInput.text?.clear()
-            availabilityInput.text?.clear()
-            viewModel.clearFilters()
-        }
-
-        alertsButton.setOnClickListener {
-            val lastCheck = session.getLastAlertCheck(userId)
-            viewModel.checkAlerts(userId, lastCheck)
-        }
-    }
-
-    private fun parseOptionalFloat(value: String): Float? {
-        val trimmed = value.trim()
-        return if (trimmed.isBlank()) null else trimmed.toFloatOrNull()
-    }
-
-    private fun showDatePicker(onDateSelected: (String) -> Unit) {
-        val calendar = Calendar.getInstance()
-        DatePickerDialog(
-            requireContext(),
-            { _, year, month, dayOfMonth ->
-                val selected = String.format("%02d-%02d-%04d", dayOfMonth, month + 1, year)
-                onDateSelected(selected)
-            },
-            calendar.get(Calendar.YEAR),
-            calendar.get(Calendar.MONTH),
-            calendar.get(Calendar.DAY_OF_MONTH)
-        ).show()
+        val lastCheck = session.getLastAlertCheck(userId)
+        viewModel.checkAlerts(userId, lastCheck)
     }
 
     private fun showMatchedListingsDialog(matches: List<com.example.housefinder.db.entities.Listing>) {
@@ -207,4 +181,75 @@ class ListingListFragment : Fragment(R.layout.fragment_listing_list) {
             .setNegativeButton("Dismiss") { dialog, _ -> dialog.dismiss() }
             .show()
     }
+
+    private fun renderFilterChips(
+        chipGroup: ChipGroup,
+        filter: ListingListViewModel.ListingFilter,
+        onClearAll: () -> Unit
+    ) {
+        chipGroup.removeAllViews()
+
+        val chips = mutableListOf<Chip>()
+        val context = requireContext()
+
+        filter.minPrice?.let {
+            chips += buildChip(context, "Min: P${formatPrice(it)}") {
+                viewModel.updateFilter { current -> current.copy(minPrice = null) }
+            }
+        }
+        filter.maxPrice?.let {
+            chips += buildChip(context, "Max: P${formatPrice(it)}") {
+                viewModel.updateFilter { current -> current.copy(maxPrice = null) }
+            }
+        }
+        filter.location?.takeIf { it.isNotBlank() }?.let { location ->
+            chips += buildChip(context, "Location: $location") {
+                viewModel.updateFilter { current -> current.copy(location = null) }
+            }
+        }
+        filter.type?.takeIf { it.isNotBlank() }?.let { type ->
+            val label = ListingInputOptions.toDisplayType(type)
+            chips += buildChip(context, "Type: $label") {
+                viewModel.updateFilter { current -> current.copy(type = null) }
+            }
+        }
+        filter.availabilityDate?.takeIf { it.isNotBlank() }?.let { date ->
+            val displayDate = HouseDateFormatter.toDisplayDate(date)
+            chips += buildChip(context, "Available: $displayDate") {
+                viewModel.updateFilter { current -> current.copy(availabilityDate = null) }
+            }
+        }
+        filter.keyword?.takeIf { it.isNotBlank() }?.let { keyword ->
+            chips += buildChip(context, "Search: $keyword") {
+                viewModel.updateSearchQuery("")
+            }
+        }
+
+        chips.forEach { chipGroup.addView(it) }
+
+        if (chips.isNotEmpty()) {
+            val clearChip = buildChip(context, getString(R.string.clear_all_filters)) { onClearAll() }
+            chipGroup.addView(clearChip)
+        }
+
+        chipGroup.visibility = if (chips.isEmpty()) View.GONE else View.VISIBLE
+    }
+
+    private fun buildChip(
+        context: android.content.Context,
+        text: String,
+        onClose: () -> Unit
+    ): Chip {
+        return Chip(context).apply {
+            this.text = text
+            isCloseIconVisible = true
+            setOnCloseIconClickListener { onClose() }
+        }
+    }
+
+    private fun formatPrice(value: Float): String {
+        return if (value % 1f == 0f) value.toInt().toString() else value.toString()
+    }
+
+    private data class SortOptionItem(val label: String, val value: ListingListViewModel.SortOrder)
 }

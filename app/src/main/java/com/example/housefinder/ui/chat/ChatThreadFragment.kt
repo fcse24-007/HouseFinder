@@ -45,31 +45,34 @@ class ChatThreadFragment : Fragment(R.layout.fragment_chat_thread) {
             return
         }
 
-        val backButton = view.findViewById<View>(R.id.btn_back_chat)
-        val partnerNameText = view.findViewById<TextView>(R.id.txt_chat_partner_name)
-        val listingTitleText = view.findViewById<TextView>(R.id.txt_chat_listing_title)
+        val toolbar = view.findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
         val messageInput = view.findViewById<EditText>(R.id.edt_message)
-        val sendButton = view.findViewById<Button>(R.id.btn_send_message)
+        val sendButton = view.findViewById<View>(R.id.btn_send_message)
         val recycler = view.findViewById<RecyclerView>(R.id.rv_chat_messages)
+        val emptyState = view.findViewById<View>(R.id.layout_empty_chat)
 
-        backButton.setOnClickListener { findNavController().popBackStack() }
+        toolbar.setNavigationIcon(R.drawable.ic_back)
+        toolbar.setNavigationOnClickListener { findNavController().popBackStack() }
 
         val adapter = ChatMessageAdapter(currentUserId)
         recycler.layoutManager = LinearLayoutManager(requireContext()).apply { stackFromEnd = true }
         recycler.adapter = adapter
 
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.partnerName.collectLatest { partnerNameText.text = it }
+            viewModel.partnerName.collectLatest { toolbar.title = it }
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.listingTitle.collectLatest { listingTitleText.text = it }
+            viewModel.listingTitle.collectLatest { toolbar.subtitle = it }
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.messages.collectLatest { messages ->
                 adapter.submitList(messages)
-                if (messages.isNotEmpty()) {
+                val isEmpty = messages.isEmpty()
+                emptyState.visibility = if (isEmpty) View.VISIBLE else View.GONE
+                recycler.visibility = if (isEmpty) View.GONE else View.VISIBLE
+                if (!isEmpty) {
                     recycler.scrollToPosition(messages.lastIndex)
                 }
             }

@@ -12,7 +12,8 @@ android {
 
     defaultConfig {
         applicationId = "com.example.housefinder"
-        minSdk = 26
+        minSdk = 23
+        //noinspection OldTargetApi
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -62,6 +63,7 @@ dependencies {
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.androidx.recyclerview)
     implementation(libs.coil)
+    implementation("com.facebook.shimmer:shimmer:0.5.0")
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
     implementation(libs.androidx.hilt.work)

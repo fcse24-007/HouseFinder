@@ -1,5 +1,6 @@
 package com.example.housefinder.viewmodel
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.housefinder.data.repository.ListingRepository
@@ -29,10 +30,12 @@ import javax.inject.Inject
 class ListingListViewModel @Inject constructor(
     private val listingRepository: ListingRepository,
     private val preferenceRepository: UserPreferenceRepository,
-    private val imageRepository: ListingImageRepository
+    private val imageRepository: ListingImageRepository,
+    private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val activeFilter = MutableStateFlow(ListingFilter())
+    private val activeFilter = MutableStateFlow(loadSavedFilter())
+    val currentFilter: StateFlow<ListingFilter> = activeFilter
 
     val listings: StateFlow<List<ListingWithImage>> = activeFilter
         .flatMapLatest { filter ->
@@ -41,7 +44,9 @@ class ListingListViewModel @Inject constructor(
                 maxPrice = filter.maxPrice,
                 location = filter.location,
                 type = filter.type,
-                availabilityDate = filter.availabilityDate
+                availabilityDate = filter.availabilityDate,
+                keyword = filter.keyword,
+                sortOrder = filter.sortOrder.value
             )
         }
         .stateIn(
@@ -70,8 +75,8 @@ class ListingListViewModel @Inject constructor(
         type: String? = null,
         availabilityDate: String? = null
     ) {
-        activeFilter.update {
-            ListingFilter(
+        activeFilter.update { current ->
+            current.copy(
                 minPrice = minPrice,
                 maxPrice = maxPrice,
                 location = location,
@@ -79,10 +84,42 @@ class ListingListViewModel @Inject constructor(
                 availabilityDate = availabilityDate
             )
         }
+        persistFilter(activeFilter.value)
     }
 
     fun clearFilters() {
+        activeFilter.update { current ->
+            current.copy(
+                minPrice = null,
+                maxPrice = null,
+                location = null,
+                type = null,
+                availabilityDate = null
+            )
+        }
+        persistFilter(activeFilter.value)
+    }
+
+    fun updateSearchQuery(keyword: String) {
+        activeFilter.update { current ->
+            current.copy(keyword = keyword.trim().ifBlank { null })
+        }
+        persistFilter(activeFilter.value)
+    }
+
+    fun updateSortOrder(sortOrder: SortOrder) {
+        activeFilter.update { current -> current.copy(sortOrder = sortOrder) }
+        persistFilter(activeFilter.value)
+    }
+
+    fun updateFilter(transform: (ListingFilter) -> ListingFilter) {
+        activeFilter.update(transform)
+        persistFilter(activeFilter.value)
+    }
+
+    fun resetAllFilters() {
         activeFilter.value = ListingFilter()
+        persistFilter(activeFilter.value)
     }
 
     fun checkAlerts(userId: Int, lastCheck: Long) {
@@ -119,6 +156,49 @@ class ListingListViewModel @Inject constructor(
         val maxPrice: Float? = null,
         val location: String? = null,
         val type: String? = null,
-        val availabilityDate: String? = null
+        val availabilityDate: String? = null,
+        val keyword: String? = null,
+        val sortOrder: SortOrder = SortOrder.NEWEST
     )
+
+    enum class SortOrder(val value: String) {
+        NEWEST("NEWEST"),
+        PRICE_ASC("PRICE_ASC"),
+        PRICE_DESC("PRICE_DESC"),
+        DISTANCE_ASC("DISTANCE_ASC")
+    }
+
+    private fun loadSavedFilter(): ListingFilter {
+        val sortName = savedStateHandle.get<String>(KEY_SORT)
+        val sortOrder = SortOrder.values().firstOrNull { it.name == sortName } ?: SortOrder.NEWEST
+        return ListingFilter(
+            minPrice = savedStateHandle.get<Float>(KEY_MIN_PRICE),
+            maxPrice = savedStateHandle.get<Float>(KEY_MAX_PRICE),
+            location = savedStateHandle.get<String>(KEY_LOCATION),
+            type = savedStateHandle.get<String>(KEY_TYPE),
+            availabilityDate = savedStateHandle.get<String>(KEY_AVAILABILITY),
+            keyword = savedStateHandle.get<String>(KEY_KEYWORD),
+            sortOrder = sortOrder
+        )
+    }
+
+    private fun persistFilter(filter: ListingFilter) {
+        savedStateHandle[KEY_MIN_PRICE] = filter.minPrice
+        savedStateHandle[KEY_MAX_PRICE] = filter.maxPrice
+        savedStateHandle[KEY_LOCATION] = filter.location
+        savedStateHandle[KEY_TYPE] = filter.type
+        savedStateHandle[KEY_AVAILABILITY] = filter.availabilityDate
+        savedStateHandle[KEY_KEYWORD] = filter.keyword
+        savedStateHandle[KEY_SORT] = filter.sortOrder.name
+    }
+
+    companion object {
+        private const val KEY_MIN_PRICE = "filters_min_price"
+        private const val KEY_MAX_PRICE = "filters_max_price"
+        private const val KEY_LOCATION = "filters_location"
+        private const val KEY_TYPE = "filters_type"
+        private const val KEY_AVAILABILITY = "filters_availability"
+        private const val KEY_KEYWORD = "filters_keyword"
+        private const val KEY_SORT = "filters_sort"
+    }
 }

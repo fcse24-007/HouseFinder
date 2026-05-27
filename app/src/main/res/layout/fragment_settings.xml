@@ -6,7 +6,6 @@
     android:background="@color/background_light"
     android:orientation="vertical">
 
-    <!-- App Bar -->
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -16,12 +15,12 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/primary"
+            app:menu="@menu/menu_settings"
             app:title="@string/nav_settings"
-            app:titleTextColor="@color/white"
-            app:navigationIcon="@drawable/ic_menu"
-            app:navigationIconTint="@color/white" />
+            app:titleTextColor="@color/white" />
 
     </com.google.android.material.appbar.AppBarLayout>
+
 
     <ScrollView
         android:layout_width="match_parent"
@@ -70,23 +69,51 @@
 
             </LinearLayout>
 
+            <!-- Help & Support Section -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="@string/help_title"
+                android:textColor="@color/text_primary"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:id="@+id/btn_help_faq"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/bg_modern_card"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Frequently Asked Questions"
+                    android:textColor="@color/text_primary"
+                    android:textSize="14sp" />
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:rotation="180"
+                    android:src="@drawable/ic_back"
+                    app:tint="@color/text_tertiary" />
+
+            </LinearLayout>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_logout"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:layout_marginTop="32dp"
-                android:text="@string/btn_logout"
-                android:textColor="@color/error"
-                app:strokeColor="@color/error"
-                app:icon="@drawable/ic_logout"
-                app:iconGravity="textStart"
-                app:iconTint="@color/error" />
 
         </LinearLayout>
     </ScrollView>

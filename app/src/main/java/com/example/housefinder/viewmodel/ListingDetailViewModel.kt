@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.Job
 
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -15,14 +16,22 @@ import javax.inject.Inject
 @HiltViewModel
 class ListingDetailViewModel @Inject constructor(private val listingRepository: ListingRepository) : ViewModel() {
 
-    private val _listing = MutableStateFlow<Listing?>(null)
-    val listing: StateFlow<Listing?> = _listing
+    private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
+    val uiState: StateFlow<UiState> = _uiState
+    private var loadJob: Job? = null
 
     fun loadListing(id: Int) {
-        viewModelScope.launch {
+        loadJob?.cancel()
+        loadJob = viewModelScope.launch {
             listingRepository.getById(id).collectLatest {
-                _listing.value = it
+                _uiState.value = if (it == null) UiState.Missing else UiState.Loaded(it)
             }
         }
+    }
+
+    sealed class UiState {
+        object Loading : UiState()
+        data class Loaded(val listing: Listing) : UiState()
+        object Missing : UiState()
     }
 }

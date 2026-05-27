@@ -1,34 +1,13 @@
 package com.example.housefinder.ui.common
 
+import com.example.housefinder.db.entities.ListingCatalog
+
 object ListingInputOptions {
-    val gaboroneAreas = listOf(
-        "Block 6",
-        "Block 7",
-        "Block 8",
-        "Block 9",
-        "Broadhurst",
-        "Gaborone West",
-        "The Village",
-        "Tlokweng",
-        "Mogoditshane"
-    )
+    val gaboroneAreas: List<String> = ListingCatalog.gaboroneAreas
+    val roomTypeLabels: List<String> = ListingCatalog.roomTypeLabels
+    val supportedRoomTypes: Set<String> = ListingCatalog.supportedRoomTypes.toSet()
 
-    private val roomTypeToStorage = linkedMapOf(
-        "En Suite" to "EN_SUITE",
-        "Shared" to "SHARED",
-        "Studio" to "STUDIO",
-        "Flat" to "FLAT",
-        "House" to "HOUSE"
-    )
+    fun toStorageType(label: String): String? = ListingCatalog.toStorageType(label)
 
-    val roomTypeLabels: List<String> = roomTypeToStorage.keys.toList()
-    val supportedRoomTypes: Set<String> = roomTypeToStorage.values.toSet()
-
-    fun toStorageType(label: String): String? = roomTypeToStorage[label]
-
-    fun toDisplayType(storageType: String?): String {
-        if (storageType.isNullOrBlank()) return ""
-        return roomTypeToStorage.entries.firstOrNull { it.value == storageType }?.key
-            ?: storageType
-    }
+    fun toDisplayType(storageType: String?): String = ListingCatalog.toDisplayType(storageType)
 }

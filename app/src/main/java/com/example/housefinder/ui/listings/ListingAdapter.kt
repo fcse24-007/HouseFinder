@@ -14,6 +14,7 @@ import com.example.housefinder.R
 import com.example.housefinder.ui.common.ListingImageLoader
 import com.example.housefinder.ui.common.ListingInputOptions
 import com.example.housefinder.ui.common.HouseDateFormatter
+import com.facebook.shimmer.ShimmerFrameLayout
 
 import com.example.housefinder.db.entities.ListingWithImage
 
@@ -36,18 +37,27 @@ class ListingAdapter(
     ) : RecyclerView.ViewHolder(itemView) {
         private val title: TextView = itemView.findViewById(R.id.txt_listing_title)
         private val location: TextView = itemView.findViewById(R.id.txt_listing_location)
-        private val price: TextView = itemView.findViewById(R.id.txt_listing_price)
+        private val priceOverlay: TextView = itemView.findViewById(R.id.txt_listing_price_overlay)
+        private val distance: TextView = itemView.findViewById(R.id.txt_listing_distance)
         private val typeBadge: TextView = itemView.findViewById(R.id.txt_listing_type_badge)
         private val availabilityBadge: TextView = itemView.findViewById(R.id.txt_listing_availability_badge)
         private val statusBadge: TextView = itemView.findViewById(R.id.txt_listing_status_badge)
         private val viewDetailsButton: Button = itemView.findViewById(R.id.btn_view_listing_details)
         private val coverImage: ImageView = itemView.findViewById(R.id.img_listing_cover)
+        private val shimmerLayout: ShimmerFrameLayout = itemView.findViewById(R.id.shimmer_listing_cover)
 
         fun bind(item: ListingWithImage) {
             val listing = item.listing
             title.text = listing.title
             location.text = listing.location
-            price.text = "BWP ${listing.price.toInt()} / month"
+            priceOverlay.text = itemView.context.getString(
+                R.string.listing_price_overlay,
+                listing.price.toInt()
+            )
+            distance.text = itemView.context.getString(
+                R.string.listing_distance_to_campus,
+                listing.distanceToCampusKm
+            )
             typeBadge.text = ListingInputOptions.toDisplayType(listing.type)
             availabilityBadge.text = itemView.context.getString(
                 R.string.listing_available_badge,
@@ -69,7 +79,7 @@ class ListingAdapter(
                 )
             )
 
-            ListingImageLoader.bind(coverImage, item.coverImagePath)
+            ListingImageLoader.bind(coverImage, item.coverImagePath, shimmerLayout = shimmerLayout)
 
             itemView.setOnClickListener { onClick(item) }
             viewDetailsButton.setOnClickListener { onClick(item) }

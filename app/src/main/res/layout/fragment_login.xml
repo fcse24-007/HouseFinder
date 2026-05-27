@@ -4,18 +4,27 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/register_cream"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingTop="8dp"
+    android:paddingBottom="12dp">
 
-    <!-- Top App Name -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="16dp"
-        android:text="@string/app_brand_name"
-        android:textColor="@color/register_text_dark"
-        android:textSize="18sp"
-        android:textStyle="bold" />
+    <!-- Top App Bar -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:paddingHorizontal="24dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="@string/app_brand_name"
+            android:textColor="@color/register_text_dark"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+    <!-- Top App Name removed; app bar now provides the brand -->
 
     <TextView
         android:layout_width="wrap_content"
@@ -43,7 +52,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="60dp"
+                android:layout_marginTop="32dp"
                 android:text="@string/login_screen_title"
                 android:textColor="@color/register_text_dark"
                 android:textSize="32sp"
@@ -59,36 +68,38 @@
 
             <!-- Email Input -->
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/layout_login_email"
                 style="@style/Widget.HouseFinder.TextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="48dp"
+                android:layout_marginTop="24dp"
+                android:hint="@string/email_hint"
                 app:startIconDrawable="@drawable/ic_email">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/edt_login_email"
                     style="@style/Widget.HouseFinder.TextInputEditText"
                     android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:hint="@string/email_hint"
+                    android:layout_height="wrap_content"
                     android:inputType="textEmailAddress" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Password Input -->
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/layout_login_password"
                 style="@style/Widget.HouseFinder.TextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                app:passwordToggleEnabled="true"
+                android:hint="@string/password_hint"
+                app:endIconMode="password_toggle"
                 app:startIconDrawable="@drawable/ic_lock">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/edt_login_password"
                     style="@style/Widget.HouseFinder.TextInputEditText"
                     android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:hint="@string/password_hint"
+                    android:layout_height="wrap_content"
                     android:inputType="textPassword" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -97,8 +108,8 @@
                 android:id="@+id/btn_login"
                 style="@style/Widget.HouseFinder.Button"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:layout_marginTop="32dp"
+                android:layout_height="52dp"
+                android:layout_marginTop="28dp"
                 android:text="@string/login_cta" />
 
             <!-- Register Link -->

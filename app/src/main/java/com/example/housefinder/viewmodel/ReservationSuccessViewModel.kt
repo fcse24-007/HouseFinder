@@ -6,8 +6,11 @@ import com.example.housefinder.data.repository.ReceiptRepository
 import com.example.housefinder.data.repository.ReservationRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 
 @HiltViewModel
@@ -19,10 +22,25 @@ class ReservationSuccessViewModel @Inject constructor(
     private val _receiptSummary = MutableStateFlow<ReceiptSummary?>(null)
     val receiptSummary: StateFlow<ReceiptSummary?> = _receiptSummary
 
-    fun loadReceipt(referenceNumber: String) {
+    private val _error = MutableSharedFlow<String>()
+    val error: SharedFlow<String> = _error.asSharedFlow()
+
+    fun loadReceipt(referenceNumber: String, userId: Int) {
         viewModelScope.launch {
-            val reservation = reservationRepository.getByReference(referenceNumber) ?: return@launch
-            val receipt = receiptRepository.getForReservation(reservation.id) ?: return@launch
+            val reservation = reservationRepository.getByReference(referenceNumber)
+            if (reservation == null) {
+                _error.emit("Reservation not found")
+                return@launch
+            }
+            if (reservation.studentId != userId) {
+                _error.emit("You are not allowed to view this receipt")
+                return@launch
+            }
+            val receipt = receiptRepository.getForReservation(reservation.id)
+            if (receipt == null) {
+                _error.emit("Receipt not found")
+                return@launch
+            }
             _receiptSummary.value = ReceiptSummary(
                 amountPaid = receipt.amountPaid,
                 paymentMethod = receipt.paymentMethod,

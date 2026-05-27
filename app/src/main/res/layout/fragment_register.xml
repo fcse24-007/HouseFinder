@@ -4,18 +4,25 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/register_cream"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingTop="8dp"
+    android:paddingBottom="12dp">
 
-    <!-- Top App Name -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="16dp"
-        android:text="@string/app_brand_name"
-        android:textColor="@color/register_text_dark"
-        android:textSize="18sp"
-        android:textStyle="bold" />
+    <!-- Top App Bar -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:paddingHorizontal="24dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="@string/app_brand_name"
+            android:textColor="@color/register_text_dark"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+    </RelativeLayout>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -34,7 +41,7 @@
                 android:id="@+id/txt_register_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="12dp"
                 android:text="@string/register_screen_title"
                 android:textColor="@color/register_text_dark"
                 android:textSize="32sp"
@@ -109,41 +116,37 @@
 
             <!-- Common Fields -->
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/layout_name"
                 style="@style/Widget.HouseFinder.TextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
-                app:startIconDrawable="@drawable/ic_person"
-                app:startIconTint="@color/register_rust">
+                android:hint="@string/full_name_hint"
+                app:startIconDrawable="@drawable/ic_person">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/edt_name"
                     style="@style/Widget.HouseFinder.TextInputEditText"
                     android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:hint="@string/full_name_hint"
-                    android:inputType="textPersonName"
-                    android:textColorHint="@color/register_text_light"
-                    android:textSize="16sp" />
+                    android:layout_height="wrap_content"
+                    android:inputType="textPersonName" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/layout_email"
                 style="@style/Widget.HouseFinder.TextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                app:startIconDrawable="@drawable/ic_email"
-                app:startIconTint="@color/register_rust">
+                android:hint="@string/email_hint"
+                app:startIconDrawable="@drawable/ic_email">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/edt_email"
                     style="@style/Widget.HouseFinder.TextInputEditText"
                     android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:hint="@string/email_hint"
-                    android:inputType="textEmailAddress"
-                    android:textColorHint="@color/register_text_light"
-                    android:textSize="16sp" />
+                    android:layout_height="wrap_content"
+                    android:inputType="textEmailAddress" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Student Specific Fields Container -->
@@ -154,71 +157,39 @@
                 android:orientation="vertical"
                 android:visibility="visible">
 
-                <!-- University Spinner Input Style -->
-                <RelativeLayout
+                <!-- University Exposed Dropdown -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layout_university"
+                    style="@style/Widget.HouseFinder.TextInputLayout.ExposedDropdown"
                     android:layout_width="match_parent"
-                    android:layout_height="60dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:background="@drawable/bg_register_input"
-                    android:paddingStart="12dp"
-                    android:paddingEnd="12dp">
+                    android:hint="@string/label_select_institution"
+                    app:startIconDrawable="@drawable/ic_school">
 
-                    <ImageView
-                        android:id="@+id/img_school"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:layout_centerVertical="true"
-                        android:src="@drawable/ic_school"
-                        app:tint="@color/register_rust" />
-
-                    <LinearLayout
+                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                        android:id="@+id/edt_university"
+                        style="@style/Widget.HouseFinder.TextInputEditText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginStart="12dp"
-                        android:layout_toEndOf="@id/img_school"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/label_select_institution"
-                            android:textColor="@color/register_text_light"
-                            android:textSize="10sp" />
-
-                        <Spinner
-                            android:id="@+id/spinner_university"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="@null" />
-                    </LinearLayout>
-
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                        android:src="@drawable/ic_arrow_drop_down"
-                        app:tint="@color/register_text_light" />
-                </RelativeLayout>
+                        android:inputType="none" />
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layout_student_id"
                     style="@style/Widget.HouseFinder.TextInputLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    app:startIconDrawable="@drawable/ic_card"
-                    app:startIconTint="@color/register_rust">
+                    android:hint="@string/student_id_hint"
+                    app:startIconDrawable="@drawable/ic_card">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/edt_student_id"
                         style="@style/Widget.HouseFinder.TextInputEditText"
                         android:layout_width="match_parent"
-                        android:layout_height="60dp"
-                        android:hint="@string/student_id_hint"
-                        android:inputType="text"
-                        android:textColorHint="@color/register_text_light"
-                        android:textSize="16sp" />
+                        android:layout_height="wrap_content"
+                        android:inputType="text" />
                 </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
 
@@ -253,31 +224,29 @@
             </LinearLayout>
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/layout_password"
                 style="@style/Widget.HouseFinder.TextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                app:passwordToggleEnabled="true"
-                app:startIconDrawable="@drawable/ic_lock"
-                app:startIconTint="@color/register_rust">
+                android:hint="@string/register_password_hint"
+                app:endIconMode="password_toggle"
+                app:startIconDrawable="@drawable/ic_lock">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/edt_password"
                     style="@style/Widget.HouseFinder.TextInputEditText"
                     android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:hint="@string/register_password_hint"
-                    android:inputType="textPassword"
-                    android:textColorHint="@color/register_text_light"
-                    android:textSize="16sp" />
+                    android:layout_height="wrap_content"
+                    android:inputType="textPassword" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Register Button -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_register"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:layout_marginTop="32dp"
+                android:layout_height="52dp"
+                android:layout_marginTop="28dp"
                 android:backgroundTint="@color/register_rust"
                 android:text="@string/create_account_cta"
                 android:textAllCaps="false"

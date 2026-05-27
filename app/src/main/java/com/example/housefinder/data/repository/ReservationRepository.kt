@@ -8,6 +8,7 @@ import com.example.housefinder.db.dao.ReservationDao
 import com.example.housefinder.db.entities.AppDatabase
 import com.example.housefinder.db.entities.Receipt
 import com.example.housefinder.db.entities.Reservation
+import com.example.housefinder.db.entities.ProviderReservationDetails
 import com.example.housefinder.db.entities.StudentReservationDetails
 import kotlinx.coroutines.flow.Flow
 
@@ -25,6 +26,9 @@ class ReservationRepository @Inject constructor(
     fun getStudentReservationDetails(studentId: Int): Flow<List<StudentReservationDetails>> =
         reservationDao.getStudentReservationDetails(studentId)
 
+    fun getProviderReservationDetails(providerId: Int): Flow<List<ProviderReservationDetails>> =
+        reservationDao.getProviderReservationDetails(providerId)
+
     suspend fun countActiveForListing(listingId: Int): Int =
         reservationDao.countActiveForListing(listingId)
 
@@ -37,7 +41,7 @@ class ReservationRepository @Inject constructor(
     suspend fun createSimulatedReservation(
         studentId: Int,
         listingId: Int,
-        paymentAlias: String
+        cardLast4: String
     ): BookingResult {
         val referenceNumber = "SIM-${System.currentTimeMillis().toString().takeLast(8)}"
         return try {
@@ -68,7 +72,7 @@ class ReservationRepository @Inject constructor(
                     Receipt(
                         reservationId = reservationId,
                         amountPaid = listing.depositAmount.toFloat(),
-                        paymentMethod = "SIMULATED_${paymentAlias.uppercase()}"
+                        paymentMethod = "SIMULATED_CARD_$cardLast4"
                     )
                 )
 

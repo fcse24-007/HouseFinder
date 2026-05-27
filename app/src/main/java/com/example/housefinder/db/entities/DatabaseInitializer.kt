@@ -25,10 +25,16 @@ object DatabaseInitializer {
             "Thuli Dineo", "Rudo Matshediso", "Bokang Motshwari"
         )
 
+        val studentNames = if (names.size >= SeedConfig.TARGET_STUDENT_COUNT) {
+            names.take(SeedConfig.TARGET_STUDENT_COUNT)
+        } else {
+            names + (names.size + 1..SeedConfig.TARGET_STUDENT_COUNT).map { "Student $it" }
+        }
+
         val maxStudentSequenceNumber = 900
         val yearCodeCycleSize = 30
 
-        val users = names.mapIndexed { i, name ->
+        val users = studentNames.mapIndexed { i, name ->
             val config = universities[i % universities.size]
             val idx = ((i % maxStudentSequenceNumber) + 1).toString().padStart(3, '0')
             val yearCode = ((i % yearCodeCycleSize) + 1).toString().padStart(2, '0')
@@ -67,11 +73,8 @@ object DatabaseInitializer {
     }
 
     suspend fun seedListings(db: AppDatabase) {
-        val locations = listOf(
-            "Block 6", "Block 7", "Block 8", "Block 9", "Broadhurst",
-            "Gaborone West", "The Village", "Tlokweng", "Mogoditshane"
-        )
-        val types = listOf("EN_SUITE", "SHARED", "STUDIO", "FLAT")
+        val locations = ListingCatalog.gaboroneAreas
+        val types = ListingCatalog.supportedRoomTypes
         val amenitySets = listOf(
             """["Free WiFi","Study Desk","24/7 Security","Laundry"]""",
             """["Free WiFi","En-suite Bathroom","Study Desk"]""",
@@ -80,15 +83,25 @@ object DatabaseInitializer {
         val availabilityDates = listOf("2024-08-01", "2024-08-15", "2024-09-01")
         val prices = listOf(950f, 1200f, 1500f, 1800f, 2200f)
 
-        val listings = (1..50).map { i ->
+        val listingTypes = if (types.size >= SeedConfig.TARGET_LISTING_COUNT) {
+            types.take(SeedConfig.TARGET_LISTING_COUNT)
+        } else {
+            generateSequence(0) { it + 1 }
+                .map { types[it % types.size] }
+                .take(SeedConfig.TARGET_LISTING_COUNT)
+                .toList()
+        }
+
+        val listings = (1..SeedConfig.TARGET_LISTING_COUNT).map { i ->
             val price = prices[i % prices.size]
+            val type = listingTypes[i - 1]
             Listing(
                 providerId = if (i <= 25) 51 else 52,
-                title = "${locations[i % locations.size]} ${types[i % types.size]}",
+                title = "${locations[i % locations.size]} ${ListingCatalog.toDisplayType(type)}",
                 description = "Quality student accommodation in Gaborone. Close to transport and shops.",
                 price = price,
                 location = locations[i % locations.size],
-                type = types[i % types.size],
+                type = type,
                 amenities = amenitySets[i % amenitySets.size],
                 depositAmount = price.toInt(),
                 availabilityDate = availabilityDates[i % availabilityDates.size],
@@ -99,13 +112,15 @@ object DatabaseInitializer {
 
         db.listingDao().insertAll(listings)
 
-        val imageDrawables = listOf("ic_logo", "ic_home", "ic_launcher_foreground")
-        val images = (1..50).map { i ->
-            ListingImage(
-                listingId = i,
-                imagePath = imageDrawables[i % imageDrawables.size],
-                sortOrder = 0
-            )
+        val imageDrawables = listOf("listing_photo_1", "listing_photo_2", "listing_photo_3")
+        val images = (1..SeedConfig.TARGET_LISTING_COUNT).flatMap { listingId ->
+            imageDrawables.mapIndexed { index, drawable ->
+                ListingImage(
+                    listingId = listingId,
+                    imagePath = drawable,
+                    sortOrder = index
+                )
+            }
         }
         db.listingImageDao().insertAll(images)
     }

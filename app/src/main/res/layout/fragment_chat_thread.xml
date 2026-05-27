@@ -6,87 +6,116 @@
     android:background="@color/register_cream"
     android:orientation="vertical">
 
-    <RelativeLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="64dp"
-        android:paddingHorizontal="16dp">
+        android:layout_height="wrap_content">
 
-        <ImageButton
-            android:id="@+id/btn_back_chat"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_centerVertical="true"
-            android:background="@null"
-            android:contentDescription="@string/back"
-            android:src="@drawable/ic_back"
-            app:tint="@color/register_text_dark" />
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/primary"
+            app:title="@string/nav_chat"
+            app:titleTextColor="@color/white" />
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="14dp"
-            android:layout_toEndOf="@id/btn_back_chat"
-            android:orientation="vertical">
+    </com.google.android.material.appbar.AppBarLayout>
 
-            <TextView
-                android:id="@+id/txt_chat_partner_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/register_text_dark"
-                android:textSize="17sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/txt_chat_listing_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/register_text_light"
-                android:textSize="12sp" />
-        </LinearLayout>
-    </RelativeLayout>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_chat_messages"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:clipToPadding="false"
-        android:paddingHorizontal="12dp"
-        android:paddingVertical="8dp" />
+        android:layout_weight="1">
 
-    <LinearLayout
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_chat_messages"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="8dp" />
+
+        <LinearLayout
+            android:id="@+id/layout_empty_chat"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="24dp"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:src="@drawable/ic_email"
+                app:tint="@color/text_secondary" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="No messages yet"
+                android:textColor="@color/text_primary"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </FrameLayout>
+
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:padding="10dp">
+        android:layout_margin="12dp"
+        app:cardCornerRadius="24dp"
+        app:cardElevation="4dp"
+        app:strokeWidth="0dp">
 
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.HouseFinder.TextInputLayout"
-            android:layout_width="0dp"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1">
+            android:padding="4dp">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edt_message"
-                style="@style/Widget.HouseFinder.TextInputEditText"
-                android:layout_width="match_parent"
-                android:layout_height="52dp"
-                android:hint="@string/chat_message_hint"
-                android:inputType="textMultiLine|textCapSentences"
-                android:maxLines="4" />
-        </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/layout_edt_message"
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:boxBackgroundColor="@android:color/transparent"
+                app:boxStrokeWidth="0dp"
+                app:boxStrokeWidthFocused="0dp"
+                app:hintEnabled="false"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/btn_send_message"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_send_message"
-            style="@style/Widget.HouseFinder.Button"
-            android:layout_width="wrap_content"
-            android:layout_height="52dp"
-            android:layout_marginStart="8dp"
-            android:minWidth="0dp"
-            android:text="@string/send" />
-    </LinearLayout>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edt_message"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:hint="@string/chat_message_hint"
+                    android:inputType="textMultiLine|textCapSentences"
+                    android:maxLines="4"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="12dp"
+                    android:textColor="@color/text_primary"
+                    android:textSize="16sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/btn_send_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                app:backgroundTint="@color/primary"
+                app:fabSize="mini"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_back"
+                app:tint="@color/white"
+                android:rotation="180" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+
 
 </LinearLayout>

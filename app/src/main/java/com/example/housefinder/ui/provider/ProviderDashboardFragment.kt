@@ -45,12 +45,8 @@ class ProviderDashboardFragment : Fragment(R.layout.fragment_provider_dashboard)
 
         val statsText = view.findViewById<TextView>(R.id.txt_provider_stats)
         val addListingButton = view.findViewById<View>(R.id.fab_add_listing)
-        val menuButton = view.findViewById<View>(R.id.btn_menu)
         val listingsRecycler = view.findViewById<RecyclerView>(R.id.rv_provider_listings)
-
-        menuButton.setOnClickListener {
-            (activity as? com.example.housefinder.MainActivity)?.findViewById<androidx.drawerlayout.widget.DrawerLayout>(R.id.drawer_layout)?.openDrawer(androidx.core.view.GravityCompat.START)
-        }
+        val emptyState = view.findViewById<View>(R.id.layout_empty_provider_listings)
 
         val listingAdapter = ProviderListingAdapter { listing ->
             showListingOptionsDialog(listing, providerId)
@@ -65,6 +61,10 @@ class ProviderDashboardFragment : Fragment(R.layout.fragment_provider_dashboard)
                 val activeCount = listings.count { it.status == "AVAILABLE" }
                 val reservedCount = listings.count { it.status == "RESERVED" }
                 statsText.text = "Total: ${listings.size} | Active: $activeCount | Reserved: $reservedCount"
+
+                val isEmpty = listings.isEmpty()
+                emptyState.visibility = if (isEmpty) View.VISIBLE else View.GONE
+                listingsRecycler.visibility = if (isEmpty) View.GONE else View.VISIBLE
             }
         }
 

@@ -7,9 +7,11 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.housefinder.R
+import com.example.housefinder.ui.common.SessionManager
 import com.example.housefinder.viewmodel.ReservationSuccessViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
@@ -32,6 +34,15 @@ class ReservationSuccessFragment : Fragment(R.layout.fragment_reservation_succes
         val methodText = view.findViewById<TextView>(R.id.txt_receipt_method)
         val paidAtText = view.findViewById<TextView>(R.id.txt_receipt_paid_at)
 
+        val userId = SessionManager(requireContext()).getUserId()
+        if (userId == null) {
+            val navOptions = NavOptions.Builder()
+                .setPopUpTo(R.id.nav_graph, true)
+                .build()
+            findNavController().navigate(R.id.loginFragment, null, navOptions)
+            return
+        }
+
         view.findViewById<TextView>(R.id.txt_reference).text =
             getString(R.string.reservation_reference_value, reference)
 
@@ -50,7 +61,13 @@ class ReservationSuccessFragment : Fragment(R.layout.fragment_reservation_succes
                 }
             }
         }
-        viewModel.loadReceipt(reference)
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.error.collectLatest { message ->
+                android.widget.Toast.makeText(requireContext(), message, android.widget.Toast.LENGTH_SHORT).show()
+                findNavController().popBackStack()
+            }
+        }
+        viewModel.loadReceipt(reference, userId)
 
         view.findViewById<Button>(R.id.btn_back_to_listings).setOnClickListener {
             findNavController().navigate(R.id.action_reservationSuccessFragment_to_listingListFragment)

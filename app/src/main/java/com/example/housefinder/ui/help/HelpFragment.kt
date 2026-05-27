@@ -22,7 +22,9 @@ class HelpFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         
-        view.findViewById<MaterialToolbar>(R.id.toolbar).setNavigationOnClickListener {
-            (activity as? com.example.housefinder.MainActivity)?.findViewById<androidx.drawerlayout.widget.DrawerLayout>(R.id.drawer_layout)?.openDrawer(androidx.core.view.GravityCompat.START) }
+        val toolbar = view.findViewById<MaterialToolbar>(R.id.toolbar)
+        toolbar.setNavigationOnClickListener {
+            findNavController().popBackStack()
+        }
     }
 }

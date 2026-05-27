@@ -37,6 +37,9 @@ interface UserDao {
     )
     suspend fun getLatestProviderIdentifier(): String?
 
+    @Query("SELECT COUNT(*) FROM users WHERE role = :role")
+    suspend fun countByRole(role: String): Int
+
     @Query("SELECT COUNT(*) FROM users")
     suspend fun count(): Int
 }

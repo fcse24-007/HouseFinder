@@ -87,7 +87,6 @@ class ProviderListingFormViewModel @Inject constructor(
                     return@launch
                 }
 
-                val distanceToCampus = (Math.random() * 5 + 0.5).toFloat()
                 val imagePathToSave = _coverImage.value
 
                 if (listingId > 0) {
@@ -114,7 +113,7 @@ class ProviderListingFormViewModel @Inject constructor(
                         depositAmount = deposit,
                         availabilityDate = availabilityStorage,
                         status = existing.status,
-                        distanceToCampusKm = distanceToCampus,
+                        distanceToCampusKm = existing.distanceToCampusKm,
                         createdAt = existing.createdAt
                     )
                     listingRepository.update(updated)
@@ -127,6 +126,7 @@ class ProviderListingFormViewModel @Inject constructor(
                         _saveResult.emit(SaveResult.Error("At least one image is required"))
                         return@launch
                     }
+                    val distanceToCampus = (Math.random() * 5 + 0.5).toFloat()
                     val newListing = Listing(
                         providerId = providerId,
                         title = title,

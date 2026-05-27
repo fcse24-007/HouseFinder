@@ -4,10 +4,10 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
@@ -20,7 +20,6 @@ import com.example.housefinder.data.repository.UserRepository
 import com.example.housefinder.ui.common.SessionManager
 import com.example.housefinder.worker.MatchingListingWorker
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.navigation.NavigationView
 import java.util.concurrent.TimeUnit
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -32,7 +31,7 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var userRepository: UserRepository
 
-    private lateinit var drawerLayout: DrawerLayout
+    private lateinit var bottomNav: BottomNavigationView
     private val notificationPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { }
 
@@ -40,16 +39,12 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        drawerLayout = findViewById(R.id.drawer_layout)
-        val navView = findViewById<NavigationView>(R.id.nav_view)
-        val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottom_navigation)
-        
+        bottomNav = findViewById(R.id.bottom_nav)
+
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         val navController = navHostFragment.navController
         val sessionManager = SessionManager(this)
-
-        NavigationUI.setupWithNavController(navView, navController)
 
         fun isAuthDestination(destinationId: Int): Boolean {
             return destinationId == R.id.loginFragment || destinationId == R.id.registerFragment
@@ -58,6 +53,27 @@ class MainActivity : AppCompatActivity() {
         fun navigateToLoginIfNeeded() {
             if (navController.currentDestination?.id != R.id.loginFragment) {
                 navController.navigate(R.id.loginFragment)
+            }
+        }
+
+        fun resolveDestination(itemId: Int, role: String): Int? {
+            return when (itemId) {
+                R.id.nav_home -> if (role == "PROVIDER") {
+                    R.id.providerDashboardFragment
+                } else {
+                    R.id.listingListFragment
+                }
+
+                R.id.nav_my_reservations -> if (role == "PROVIDER") {
+                    R.id.providerReservationsFragment
+                } else {
+                    R.id.myReservationsFragment
+                }
+
+                R.id.nav_preferences -> if (role == "PROVIDER") null else R.id.preferencesFragment
+                R.id.nav_chat -> R.id.chatListFragment
+                R.id.nav_settings -> R.id.settingsFragment
+                else -> null
             }
         }
 
@@ -72,53 +88,21 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 val isProvider = user?.role == "PROVIDER"
-                navView.menu.findItem(R.id.nav_my_reservations).isVisible = !isProvider
-                navView.menu.findItem(R.id.nav_preferences).isVisible = !isProvider
-                bottomNavigation.menu.findItem(R.id.nav_my_reservations).isVisible = !isProvider
-                bottomNavigation.menu.findItem(R.id.nav_preferences).isVisible = !isProvider
+                val reservationsTitle = if (isProvider) {
+                    getString(R.string.nav_provider_reservations)
+                } else {
+                    getString(R.string.nav_my_reservations)
+                }
 
-                val headerView = navView.getHeaderView(0)
-                headerView.findViewById<android.widget.TextView>(R.id.nav_header_name).text =
-                    user?.name ?: getString(R.string.app_brand_name)
-                headerView.findViewById<android.widget.TextView>(R.id.nav_header_subtitle).text =
-                    user?.role.orEmpty()
+                bottomNav.menu.findItem(R.id.nav_my_reservations).apply {
+                    isVisible = true
+                    title = reservationsTitle
+                }
+                bottomNav.menu.findItem(R.id.nav_preferences).isVisible = !isProvider
             }
         }
 
-        navView.setNavigationItemSelectedListener { item ->
-            lifecycleScope.launch {
-                val userId = sessionManager.getUserId()
-                val user = userId?.let { userRepository.getById(it) }
-                if (userId == null || user == null) {
-                    sessionManager.clearSession()
-                    navigateToLoginIfNeeded()
-                    drawerLayout.closeDrawers()
-                    return@launch
-                }
-
-                val targetDestination = when (item.itemId) {
-                    R.id.nav_home -> {
-                        if (user.role == "PROVIDER") R.id.providerDashboardFragment
-                        else R.id.listingListFragment
-                    }
-
-                    R.id.nav_my_reservations -> R.id.myReservationsFragment
-                    R.id.nav_preferences -> R.id.preferencesFragment
-                    R.id.nav_chat -> R.id.chatListFragment
-                    R.id.nav_help -> R.id.helpFragment
-                    R.id.nav_settings -> R.id.settingsFragment
-                    else -> return@launch
-                }
-
-                if (navController.currentDestination?.id != targetDestination) {
-                    navController.navigate(targetDestination)
-                }
-                drawerLayout.closeDrawers()
-            }
-            true
-        }
-
-        bottomNavigation.setOnItemSelectedListener { item ->
+        bottomNav.setOnItemSelectedListener { item ->
             lifecycleScope.launch {
                 val userId = sessionManager.getUserId()
                 val user = userId?.let { userRepository.getById(it) }
@@ -127,40 +111,47 @@ class MainActivity : AppCompatActivity() {
                     navigateToLoginIfNeeded()
                     return@launch
                 }
-                val targetDestination = when (item.itemId) {
-                    R.id.nav_home -> if (user.role == "PROVIDER") R.id.providerDashboardFragment else R.id.listingListFragment
-                    R.id.nav_my_reservations -> R.id.myReservationsFragment
-                    R.id.nav_preferences -> R.id.preferencesFragment
-                    R.id.nav_chat -> R.id.chatListFragment
-                    R.id.nav_settings -> R.id.settingsFragment
-                    else -> return@launch
-                }
+
+                val targetDestination = resolveDestination(item.itemId, user.role) ?: return@launch
                 if (navController.currentDestination?.id != targetDestination) {
                     navController.navigate(targetDestination)
                 }
             }
             true
         }
+
+        bottomNav.setOnItemReselectedListener { }
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             val isAuth = isAuthDestination(destination.id)
             if (isAuth) {
-                drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
-                bottomNavigation.visibility = android.view.View.GONE
+                bottomNav.visibility = View.GONE
             } else {
-                drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+                bottomNav.visibility = View.VISIBLE
                 applyRoleMenuState()
-                bottomNavigation.visibility = android.view.View.VISIBLE
-                val selectedItem = when (destination.id) {
-                    R.id.listingListFragment, R.id.providerDashboardFragment -> R.id.nav_home
-                    R.id.myReservationsFragment -> R.id.nav_my_reservations
-                    R.id.preferencesFragment -> R.id.nav_preferences
-                    R.id.chatListFragment, R.id.chatThreadFragment -> R.id.nav_chat
-                    R.id.settingsFragment -> R.id.nav_settings
-                    else -> null
-                }
-                selectedItem?.let { bottomNavigation.menu.findItem(it)?.isChecked = true }
             }
+
+            val bottomNavItem = when (destination.id) {
+                R.id.listingListFragment,
+                R.id.providerDashboardFragment,
+                R.id.listingDetailFragment,
+                R.id.listingFiltersFragment,
+                R.id.providerListingFormFragment,
+                R.id.paymentFragment,
+                R.id.reservationSuccessFragment -> R.id.nav_home
+
+                R.id.myReservationsFragment,
+                R.id.providerReservationsFragment,
+                R.id.receiptDetailFragment -> R.id.nav_my_reservations
+
+                R.id.preferencesFragment -> R.id.nav_preferences
+                R.id.chatListFragment,
+                R.id.chatThreadFragment -> R.id.nav_chat
+                R.id.settingsFragment,
+                R.id.helpFragment -> R.id.nav_settings
+                else -> null
+            }
+            bottomNavItem?.let { bottomNav.menu.findItem(it)?.isChecked = true }
         }
 
         applyRoleMenuState()

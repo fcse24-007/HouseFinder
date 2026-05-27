@@ -4,33 +4,23 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/register_cream"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingBottom="64dp">
 
-    <RelativeLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="64dp"
-        android:paddingHorizontal="24dp">
+        android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/btn_menu"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_centerVertical="true"
-            android:src="@drawable/ic_menu"
-            app:tint="@color/register_rust" />
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/primary"
+            app:title="Provider Dashboard"
+            app:titleTextColor="@color/white" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toEndOf="@id/btn_menu"
-            android:layout_marginStart="16dp"
-            android:text="Provider Dashboard"
-            android:textColor="@color/register_text_dark"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+    </com.google.android.material.appbar.AppBarLayout>
 
-    </RelativeLayout>
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
@@ -78,14 +68,55 @@
         android:textSize="18sp"
         android:textStyle="bold" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_provider_listings"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:clipToPadding="false"
-        android:paddingTop="8dp"
-        android:paddingBottom="80dp" />
+        android:layout_weight="1">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_provider_listings"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingHorizontal="24dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="64dp" />
+
+        <LinearLayout
+            android:id="@+id/layout_empty_provider_listings"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="24dp"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:contentDescription="Empty Listings"
+                android:src="@drawable/ic_home"
+                app:tint="@color/register_text_light" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="No listings yet"
+                android:textColor="@color/register_text_dark"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:text="Create your first listing to start reaching students."
+                android:textColor="@color/register_text_light"
+                android:textSize="14sp" />
+        </LinearLayout>
+    </FrameLayout>
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/fab_add_listing"

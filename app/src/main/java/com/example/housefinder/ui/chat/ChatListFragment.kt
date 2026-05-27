@@ -36,15 +36,8 @@ class ChatListFragment : Fragment(R.layout.fragment_chat_list) {
             return
         }
 
-        val menuButton = view.findViewById<View>(R.id.btn_menu)
-        val emptyText = view.findViewById<TextView>(R.id.txt_empty_chats)
+        val emptyState = view.findViewById<View>(R.id.layout_empty_chats)
         val recycler = view.findViewById<RecyclerView>(R.id.rv_conversations)
-
-        menuButton.setOnClickListener {
-            (activity as? com.example.housefinder.MainActivity)
-                ?.findViewById<androidx.drawerlayout.widget.DrawerLayout>(R.id.drawer_layout)
-                ?.openDrawer(androidx.core.view.GravityCompat.START)
-        }
 
         val adapter = ChatConversationAdapter { item ->
             val action = ChatListFragmentDirections.actionChatListFragmentToChatThreadFragment(
@@ -62,7 +55,7 @@ class ChatListFragment : Fragment(R.layout.fragment_chat_list) {
             viewModel.conversations.collectLatest { sortedRows ->
                 adapter.submitList(sortedRows)
                 val showEmpty = sortedRows.isEmpty()
-                emptyText.visibility = if (showEmpty) View.VISIBLE else View.GONE
+                emptyState.visibility = if (showEmpty) View.VISIBLE else View.GONE
                 recycler.visibility = if (showEmpty) View.GONE else View.VISIBLE
             }
         }

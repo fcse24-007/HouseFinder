@@ -16,10 +16,10 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/primary"
+            app:navigationIcon="@drawable/ic_back"
+            app:navigationIconTint="@color/white"
             app:title="@string/help_title"
-            app:titleTextColor="@color/white"
-            app:navigationIcon="@drawable/ic_menu"
-            app:navigationIconTint="@color/white" />
+            app:titleTextColor="@color/white" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -167,41 +167,6 @@
 
             </LinearLayout>
 
-            <!-- Contact & Support -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:text="@string/help_section_support"
-                android:textColor="@color/primary"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:background="@drawable/bg_modern_card"
-                android:padding="16dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/help_question_contact_us"
-                    android:textColor="@color/text_primary"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="@string/help_answer_contact_us"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="13sp" />
-
-            </LinearLayout>
 
         </LinearLayout>
     </ScrollView>

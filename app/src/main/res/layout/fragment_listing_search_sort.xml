@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/register_cream"
+    android:orientation="vertical"
+    android:paddingBottom="24dp"
+    android:paddingTop="8dp">
+
+    <View
+        android:layout_width="36dp"
+        android:layout_height="4dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/bg_bottom_sheet_handle" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginBottom="16dp"
+        android:text="Search &amp; Sort"
+        android:textColor="@color/register_text_dark"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layout_search"
+        style="@style/Widget.HouseFinder.TextInputLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="24dp"
+        android:hint="@string/search_listings_hint"
+        app:endIconMode="clear_text">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edt_search_listings"
+            style="@style/Widget.HouseFinder.TextInputEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layout_sort"
+        style="@style/Widget.HouseFinder.TextInputLayout.ExposedDropdown"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginTop="16dp"
+        android:hint="@string/sort_by">
+
+        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+            android:id="@+id/edt_sort_listings"
+            style="@style/Widget.HouseFinder.TextInputEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="none" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_apply_search"
+        style="@style/Widget.HouseFinder.Button"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginTop="24dp"
+        android:text="Show Results" />
+
+</LinearLayout>

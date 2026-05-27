@@ -3,9 +3,9 @@ package com.example.housefinder.ui.auth
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.EditText
-import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -34,7 +34,7 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
         val emailInput = view.findViewById<EditText>(R.id.edt_email)
         val passwordInput = view.findViewById<EditText>(R.id.edt_password)
         val studentIdInput = view.findViewById<EditText>(R.id.edt_student_id)
-        val universitySpinner = view.findViewById<Spinner>(R.id.spinner_university)
+        val universityInput = view.findViewById<AutoCompleteTextView>(R.id.edt_university)
         val studentRoleButton = view.findViewById<Button>(R.id.btn_role_student_register)
         val providerRoleButton = view.findViewById<Button>(R.id.btn_role_provider_register)
         val selectedRoleText = view.findViewById<TextView>(R.id.txt_role_selected)
@@ -48,11 +48,14 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
         var selectedRole = "STUDENT"
 
         val universities = GABORONE_UNIVERSITIES.map { it.name }
-        universitySpinner.adapter = ArrayAdapter(
-            requireContext(),
-            android.R.layout.simple_spinner_dropdown_item,
-            universities
+        universityInput.setAdapter(
+            ArrayAdapter(
+                requireContext(),
+                android.R.layout.simple_dropdown_item_1line,
+                universities
+            )
         )
+        universityInput.setOnClickListener { universityInput.showDropDown() }
 
         fun updateRoleUi(isStudent: Boolean) {
             selectedRole = if (isStudent) "STUDENT" else "PROVIDER"
@@ -120,7 +123,7 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
             val password = passwordInput.text.toString().trim()
             val role = selectedRole
             val studentIdValue = studentIdInput.text.toString().trim()
-            val university = universitySpinner.selectedItem?.toString().orEmpty()
+            val university = universityInput.text.toString().trim()
 
             if (name.isBlank() || email.isBlank() || password.length < 6) {
                 Toast.makeText(requireContext(), "Please complete all required fields", Toast.LENGTH_SHORT).show()

@@ -1,52 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Gaborone Edition Palette - Modern Material 3 -->
+    <!-- Cool Teal + Slate Palette -->
 
-    <!-- Primary: Gaborone Clay (Enhanced) -->
-    <color name="primary">#D64E28</color>
-
-    <!-- Secondary: Mokolodi Green (Enhanced) -->
-    <color name="secondary">#3A7D52</color>
+    <color name="primary">#167D7F</color>
+    <color name="secondary">#2F4858</color>
     <color name="on_secondary">#FFFFFF</color>
-
-    <!-- Tertiary: Savanna Gold (Enhanced) -->
-    <color name="accent">#E8B340</color>
+    <color name="accent">#F4A261</color>
 
     <!-- Surfaces & backgrounds - Light Theme -->
-    <color name="background_light">#FEFBF7</color>
+    <color name="background_light">#F7F9FA</color>
     <color name="surface_light">#FFFFFF</color>
-    <color name="surface_variant">#F0E8E0</color>
+    <color name="surface_variant">#E8EEF0</color>
 
     <!-- Text Colors - Light Theme -->
-    <color name="text_primary">#1F1B16</color>
-    <color name="text_secondary">#7B6F68</color>
-    <color name="text_tertiary">#AFA39D</color>
+    <color name="text_primary">#1B1E23</color>
+    <color name="text_secondary">#5D6670</color>
+    <color name="text_tertiary">#8A929A</color>
 
     <!-- Utility Colors -->
-    <color name="success">#3A7D52</color>
-    <color name="success_light">#C8E6D8</color>
-    <color name="warning">#E8B340</color>
-    <color name="error">#C13C3C</color>
+    <color name="success">#2E7D62</color>
+    <color name="success_light">#CDEBE4</color>
+    <color name="warning">#F4A261</color>
+    <color name="error">#D1495B</color>
 
     <!-- State Colors -->
-    <color name="border_light">#D4C4BA</color>
-    <color name="divider_light">#E0D5CD</color>
+    <color name="border_light">#D7DEE3</color>
+    <color name="divider_light">#E3E8EC</color>
 
     <!-- Register Screen Specific Colors -->
-    <color name="summary_background">#F9EAE1</color>
-    <color name="register_rust">#B24A2C</color>
-    <color name="register_cream">#FAF9F6</color>
-    <color name="register_text_dark">#4A4A4A</color>
-    <color name="register_text_light">#757575</color>
+    <color name="summary_background">#EAF4F3</color>
+    <color name="register_rust">#167D7F</color>
+    <color name="register_cream">#F7F9FA</color>
+    <color name="register_text_dark">#1B1E23</color>
+    <color name="register_text_light">#5D6670</color>
 
     <!-- Legacy (kept for compatibility) -->
     <color name="white">#FFFFFFFF</color>
 
     <!-- Dark theme variants -->
-    <color name="secondary_dark_theme">#8DD4A7</color>
-    <color name="on_secondary_dark_theme">#003920</color>
-    <color name="background_dark">#1C1512</color>
-    <color name="surface_dark">#2A2319</color>
-    <color name="on_background_dark">#EDE0D4</color>
-    <color name="error_dark">#FFB4A9</color>
+    <color name="secondary_dark_theme">#63B5B6</color>
+    <color name="on_secondary_dark_theme">#003A3B</color>
+    <color name="background_dark">#12181B</color>
+    <color name="surface_dark">#1A2328</color>
+    <color name="on_background_dark">#E6EEF2</color>
+    <color name="error_dark">#FFB4AB</color>
 </resources>

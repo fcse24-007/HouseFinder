@@ -4,133 +4,157 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_light"
-    android:gravity="center"
-    android:orientation="vertical"
-    android:padding="20dp">
+    android:orientation="vertical">
 
-    <!-- Success Icon/Indicator -->
-    <com.google.android.material.card.MaterialCardView
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        app:cardBackgroundColor="@color/success_light"
-        app:cardCornerRadius="40dp"
-        app:cardElevation="0dp">
+    <!-- Top App Bar -->
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/primary"
+            app:title="@string/app_brand_name"
+            app:titleTextColor="@color/white" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <!-- Success Content -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+
+        <!-- Success Icon/Indicator -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            app:cardBackgroundColor="@color/success_light"
+            app:cardCornerRadius="40dp"
+            app:cardElevation="0dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/reservation_success_icon"
+                android:textColor="@color/success"
+                android:textSize="40sp"
+                android:textStyle="bold" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Success Title -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="@string/reservation_success_icon"
-            android:textColor="@color/success"
-            android:textSize="40sp"
-            android:textStyle="bold" />
-    </com.google.android.material.card.MaterialCardView>
+            android:layout_marginTop="20dp"
+            android:text="@string/title_reservation_confirmed"
+            android:textStyle="bold"
+            android:textSize="26sp"
+            android:textColor="@color/success" />
 
-    <!-- Success Title -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="@string/title_reservation_confirmed"
-        android:textStyle="bold"
-        android:textSize="26sp"
-        android:textColor="@color/success" />
+        <!-- Message -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="@string/reservation_success_message"
+            android:textColor="@color/text_secondary"
+            android:textSize="14sp"
+            android:gravity="center" />
 
-    <!-- Message -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:text="@string/reservation_success_message"
-        android:textColor="@color/text_secondary"
-        android:textSize="14sp"
-        android:gravity="center" />
-
-    <!-- Reference Number Card -->
-    <com.google.android.material.card.MaterialCardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:layout_marginBottom="32dp"
-        android:backgroundTint="@color/surface_variant">
-
-        <LinearLayout
+        <!-- Reference Number Card -->
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="20dp">
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="32dp"
+            android:backgroundTint="@color/surface_variant">
 
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/reservation_reference_label"
-                android:textColor="@color/text_secondary"
-                android:textSize="12sp" />
+                android:orientation="vertical"
+                android:padding="20dp">
 
-            <TextView
-                android:id="@+id/txt_reference"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/reservation_reference_prefix"
-                android:textColor="@color/primary"
-                android:textStyle="bold"
-                android:textSize="18sp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/reservation_reference_label"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="12sp" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:text="@string/reservation_reference_note"
-                android:textColor="@color/text_tertiary"
-                android:textSize="12sp" />
+                <TextView
+                    android:id="@+id/txt_reference"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/reservation_reference_prefix"
+                    android:textColor="@color/primary"
+                    android:textStyle="bold"
+                    android:textSize="18sp" />
 
-            <TextView
-                android:id="@+id/txt_receipt_amount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:text="@string/receipt_amount_default"
-                android:textColor="@color/text_primary"
-                android:textSize="13sp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="@string/reservation_reference_note"
+                    android:textColor="@color/text_tertiary"
+                    android:textSize="12sp" />
 
-            <TextView
-                android:id="@+id/txt_receipt_method"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="@string/receipt_method_default"
-                android:textColor="@color/text_primary"
-                android:textSize="13sp" />
+                <TextView
+                    android:id="@+id/txt_receipt_amount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="@string/receipt_amount_default"
+                    android:textColor="@color/text_primary"
+                    android:textSize="13sp" />
 
-            <TextView
-                android:id="@+id/txt_receipt_paid_at"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="@string/receipt_paid_at_default"
-                android:textColor="@color/text_primary"
-                android:textSize="13sp" />
+                <TextView
+                    android:id="@+id/txt_receipt_method"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="@string/receipt_method_default"
+                    android:textColor="@color/text_primary"
+                    android:textSize="13sp" />
 
-        </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
+                <TextView
+                    android:id="@+id/txt_receipt_paid_at"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="@string/receipt_paid_at_default"
+                    android:textColor="@color/text_primary"
+                    android:textSize="13sp" />
 
-    <!-- Back Button -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_back_to_listings"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:text="@string/btn_back_to_listings"
-        android:textSize="16sp"
-        app:cornerRadius="12dp" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_go_to_my_reservations"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:layout_marginTop="12dp"
-        android:text="@string/btn_my_reservations"
-        android:textAllCaps="false" />
+        <!-- Back Button -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_back_to_listings"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:text="@string/btn_back_to_listings"
+            android:textSize="16sp"
+            app:cornerRadius="12dp" />
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_go_to_my_reservations"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginTop="12dp"
+            android:text="@string/btn_my_reservations"
+            android:textAllCaps="false" />
+
+    </LinearLayout>
 </LinearLayout>

@@ -17,9 +17,7 @@
             android:layout_height="?attr/actionBarSize"
             android:background="@color/primary"
             app:title="@string/title_preferences"
-            app:titleTextColor="@color/white"
-            app:navigationIcon="@drawable/ic_menu"
-            app:navigationIconTint="@color/white" />
+            app:titleTextColor="@color/white" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -68,44 +66,34 @@
                 android:layout_marginTop="12dp">
 
                 <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.HouseFinder.TextInputLayout"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginEnd="8dp"
-                    app:boxBackgroundMode="outline"
-                    app:boxCornerRadiusBottomEnd="8dp"
-                    app:boxCornerRadiusBottomStart="8dp"
-                    app:boxCornerRadiusTopEnd="8dp"
-                    app:boxCornerRadiusTopStart="8dp">
+                    android:hint="@string/hint_min_price">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/edt_min_price"
+                        style="@style/Widget.HouseFinder.TextInputEditText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="@string/hint_min_price"
-                        android:inputType="numberDecimal"
-                        android:textColor="@color/text_primary"
-                        android:textSize="14sp" />
+                        android:inputType="numberDecimal" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.HouseFinder.TextInputLayout"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    app:boxBackgroundMode="outline"
-                    app:boxCornerRadiusBottomEnd="8dp"
-                    app:boxCornerRadiusBottomStart="8dp"
-                    app:boxCornerRadiusTopEnd="8dp"
-                    app:boxCornerRadiusTopStart="8dp">
+                    android:hint="@string/hint_max_price">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/edt_max_price"
+                        style="@style/Widget.HouseFinder.TextInputEditText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="@string/hint_max_price"
-                        android:inputType="numberDecimal"
-                        android:textColor="@color/text_primary"
-                        android:textSize="14sp" />
+                        android:inputType="numberDecimal" />
                 </com.google.android.material.textfield.TextInputLayout>
 
             </LinearLayout>
@@ -121,22 +109,18 @@
                 android:textStyle="bold" />
 
             <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.HouseFinder.TextInputLayout.ExposedDropdown"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                app:boxBackgroundMode="outline"
-                app:boxCornerRadiusBottomEnd="8dp"
-                app:boxCornerRadiusBottomStart="8dp"
-                app:boxCornerRadiusTopEnd="8dp"
-                app:boxCornerRadiusTopStart="8dp">
+                android:hint="@string/hint_location">
 
-                <com.google.android.material.textfield.TextInputEditText
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
                     android:id="@+id/edt_location"
+                    style="@style/Widget.HouseFinder.TextInputEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/hint_location"
-                    android:textColor="@color/text_primary"
-                    android:textSize="14sp" />
+                    android:inputType="none" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Property Type Section -->
@@ -150,22 +134,18 @@
                 android:textStyle="bold" />
 
             <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.HouseFinder.TextInputLayout.ExposedDropdown"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                app:boxBackgroundMode="outline"
-                app:boxCornerRadiusBottomEnd="8dp"
-                app:boxCornerRadiusBottomStart="8dp"
-                app:boxCornerRadiusTopEnd="8dp"
-                app:boxCornerRadiusTopStart="8dp">
+                android:hint="@string/label_preferred_type">
 
-                <com.google.android.material.textfield.TextInputEditText
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
                     android:id="@+id/edt_type"
+                    style="@style/Widget.HouseFinder.TextInputEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/label_preferred_type"
-                    android:textColor="@color/text_primary"
-                    android:textSize="14sp" />
+                    android:inputType="none" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
@@ -178,22 +158,19 @@
                 android:textStyle="bold" />
 
             <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.HouseFinder.TextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                app:boxBackgroundMode="outline"
-                app:boxCornerRadiusBottomEnd="8dp"
-                app:boxCornerRadiusBottomStart="8dp"
-                app:boxCornerRadiusTopEnd="8dp"
-                app:boxCornerRadiusTopStart="8dp">
+                android:hint="@string/filter_availability_date">
 
-                <com.google.android.material.textfield.TextInputEditText
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
                     android:id="@+id/edt_availability_date"
+                    style="@style/Widget.HouseFinder.TextInputEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/filter_availability_date"
-                    android:textColor="@color/text_primary"
-                    android:textSize="14sp" />
+                    android:focusable="false"
+                    android:inputType="none" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Notifications Section -->

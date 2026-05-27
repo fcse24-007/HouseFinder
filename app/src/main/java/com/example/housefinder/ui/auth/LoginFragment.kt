@@ -45,11 +45,15 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
                     is LoginViewModel.LoginResult.Success -> {
                         val user = result.user
                         SessionManager(requireContext()).saveSession(user.id)
-                        
+
+                        val navController = findNavController()
+                        if (navController.currentDestination?.id != R.id.loginFragment) {
+                            return@collect
+                        }
                         // Navigate based on user role
                         when (user.role) {
-                            "PROVIDER" -> findNavController().navigate(R.id.action_loginFragment_to_providerDashboardFragment)
-                            else -> findNavController().navigate(R.id.action_loginFragment_to_listingListFragment)
+                            "PROVIDER" -> navController.navigate(R.id.action_loginFragment_to_providerDashboardFragment)
+                            else -> navController.navigate(R.id.action_loginFragment_to_listingListFragment)
                         }
                     }
                     is LoginViewModel.LoginResult.Error -> {

@@ -42,11 +42,27 @@
             android:id="@+id/action_listingListFragment_to_preferencesFragment"
             app:destination="@id/preferencesFragment" />
         <action
+            android:id="@+id/action_listingListFragment_to_listingFiltersFragment"
+            app:destination="@id/listingFiltersFragment" />
+        <action
+            android:id="@+id/action_listingListFragment_to_listingSearchSortFragment"
+            app:destination="@id/listingSearchSortFragment" />
+        <action
             android:id="@+id/action_listingListFragment_to_loginFragment"
             app:destination="@id/loginFragment"
             app:popUpTo="@id/nav_graph"
             app:popUpToInclusive="true" />
     </fragment>
+
+    <dialog
+        android:id="@+id/listingFiltersFragment"
+        android:name="com.example.housefinder.ui.listings.ListingFiltersFragment"
+        android:label="Filters" />
+
+    <dialog
+        android:id="@+id/listingSearchSortFragment"
+        android:name="com.example.housefinder.ui.listings.ListingSearchSortFragment"
+        android:label="Search &amp; Sort" />
 
     <fragment
         android:id="@+id/listingDetailFragment"
@@ -71,7 +87,26 @@
     <fragment
         android:id="@+id/myReservationsFragment"
         android:name="com.example.housefinder.ui.reservation.MyReservationsFragment"
-        android:label="My Reservations" />
+        android:label="My Reservations">
+        <action
+            android:id="@+id/action_myReservationsFragment_to_chatThreadFragment"
+            app:destination="@id/chatThreadFragment" />
+        <action
+            android:id="@+id/action_myReservationsFragment_to_receiptDetailFragment"
+            app:destination="@id/receiptDetailFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/providerReservationsFragment"
+        android:name="com.example.housefinder.ui.reservation.ProviderReservationsFragment"
+        android:label="Reservations">
+        <action
+            android:id="@+id/action_providerReservationsFragment_to_chatThreadFragment"
+            app:destination="@id/chatThreadFragment" />
+        <action
+            android:id="@+id/action_providerReservationsFragment_to_receiptDetailFragment"
+            app:destination="@id/receiptDetailFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/paymentFragment"
@@ -97,6 +132,15 @@
             app:destination="@id/listingListFragment"
             app:popUpTo="@id/listingListFragment"
             app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/receiptDetailFragment"
+        android:name="com.example.housefinder.ui.reservation.ReceiptDetailFragment"
+        android:label="Receipt">
+        <argument
+            android:name="referenceNumber"
+            app:argType="string" />
     </fragment>
 
     <fragment
@@ -158,4 +202,3 @@
     </fragment>
 
 </navigation>
-

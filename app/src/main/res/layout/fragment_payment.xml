@@ -4,34 +4,25 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/register_cream"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingTop="8dp">
 
-    <LinearLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingHorizontal="14dp">
+        android:layout_height="wrap_content">
 
-        <ImageButton
-            android:id="@+id/btn_close_payment"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:background="@android:color/transparent"
-            android:contentDescription="@string/close"
-            android:src="@drawable/ic_back"
-            app:tint="@color/register_text_dark" />
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/primary"
+            app:navigationIcon="@drawable/ic_back"
+            app:navigationIconTint="@color/white"
+            app:title="@string/title_complete_booking"
+            app:titleTextColor="@color/white" />
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/title_complete_booking"
-            android:textColor="@color/register_text_dark"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+    </com.google.android.material.appbar.AppBarLayout>
 
-    </LinearLayout>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -44,6 +35,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:paddingHorizontal="20dp"
+            android:paddingTop="8dp"
             android:paddingBottom="20dp">
 
             <com.google.android.material.card.MaterialCardView
@@ -178,35 +170,56 @@
                 android:textStyle="bold" />
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/input_cardholder_name"
                 style="@style/Widget.HouseFinder.TextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="14dp"
+                android:hint="@string/hint_cardholder_name"
                 app:startIconDrawable="@drawable/ic_person">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/edt_cardholder_name"
                     style="@style/Widget.HouseFinder.TextInputEditText"
                     android:layout_width="match_parent"
-                    android:layout_height="58dp"
-                    android:hint="@string/hint_cardholder_name"
+                    android:layout_height="wrap_content"
                     android:inputType="textPersonName" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/input_card_number"
                 style="@style/Widget.HouseFinder.TextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
+                android:hint="@string/hint_card_number"
                 app:startIconDrawable="@drawable/ic_card">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/edt_card_number"
                     style="@style/Widget.HouseFinder.TextInputEditText"
                     android:layout_width="match_parent"
-                    android:layout_height="58dp"
-                    android:hint="@string/hint_payment_alias"
-                    android:inputType="textCapCharacters" />
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:maxLength="16" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/input_card_cvv"
+                style="@style/Widget.HouseFinder.TextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:hint="@string/hint_cvv"
+                app:startIconDrawable="@drawable/ic_lock">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edt_card_cvv"
+                    style="@style/Widget.HouseFinder.TextInputEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberPassword"
+                    android:maxLength="4" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
@@ -221,7 +234,7 @@
                 android:id="@+id/btn_confirm_payment"
                 style="@style/Widget.HouseFinder.Button"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
+                android:layout_height="52dp"
                 android:layout_marginTop="18dp"
                 android:text="@string/btn_confirm_payment_default" />
 
@@ -229,7 +242,7 @@
                 android:id="@+id/btn_cancel_payment"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="match_parent"
-                android:layout_height="58dp"
+                android:layout_height="52dp"
                 android:layout_marginTop="12dp"
                 android:layout_marginBottom="8dp"
                 android:text="@string/cancel"

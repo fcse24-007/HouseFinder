@@ -27,6 +27,7 @@ import com.example.housefinder.ui.common.ListingImageLoader
 import com.example.housefinder.ui.common.ListingInputOptions
 import com.example.housefinder.ui.common.SessionManager
 import com.example.housefinder.viewmodel.ProviderListingFormViewModel
+import com.google.android.material.textfield.TextInputLayout
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -75,6 +76,14 @@ class ProviderListingFormFragment : Fragment(R.layout.fragment_provider_listing_
 
         val listingId = args.listingId
 
+        val titleLayout = view.findViewById<TextInputLayout>(R.id.input_listing_title)
+        val descriptionLayout = view.findViewById<TextInputLayout>(R.id.input_listing_description)
+        val locationLayout = view.findViewById<TextInputLayout>(R.id.input_listing_location)
+        val typeLayout = view.findViewById<TextInputLayout>(R.id.input_listing_type)
+        val amenitiesLayout = view.findViewById<TextInputLayout>(R.id.input_listing_amenities)
+        val priceLayout = view.findViewById<TextInputLayout>(R.id.input_listing_price)
+        val depositLayout = view.findViewById<TextInputLayout>(R.id.input_listing_deposit)
+        val availabilityLayout = view.findViewById<TextInputLayout>(R.id.input_listing_availability)
         val titleInput = view.findViewById<EditText>(R.id.edt_listing_title)
         val descriptionInput = view.findViewById<EditText>(R.id.edt_description)
         val priceInput = view.findViewById<EditText>(R.id.edt_listing_price)
@@ -83,9 +92,14 @@ class ProviderListingFormFragment : Fragment(R.layout.fragment_provider_listing_
         val amenitiesInput = view.findViewById<EditText>(R.id.edt_listing_amenities)
         val depositInput = view.findViewById<EditText>(R.id.edt_listing_deposit)
         val availabilityInput = view.findViewById<AutoCompleteTextView>(R.id.edt_listing_availability)
+        val imageStatusText = view.findViewById<TextView>(R.id.txt_property_image_status)
         val uploadButton = view.findViewById<Button>(R.id.btnUpload)
         val saveButton = view.findViewById<Button>(R.id.btn_save_listing)
-        val backButton = view.findViewById<View>(R.id.btn_form_back)
+        val toolbar = view.findViewById<com.google.android.material.appbar.MaterialToolbar>(R.id.toolbar)
+
+        toolbar.setNavigationOnClickListener {
+            findNavController().popBackStack()
+        }
 
         locationInput.setAdapter(
             ArrayAdapter(
@@ -94,8 +108,18 @@ class ProviderListingFormFragment : Fragment(R.layout.fragment_provider_listing_
                 ListingInputOptions.gaboroneAreas
             )
         )
+        locationInput.threshold = 0
         locationInput.setRawInputType(InputType.TYPE_NULL)
         locationInput.setOnClickListener { locationInput.showDropDown() }
+        locationInput.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                locationInput.showDropDown()
+            }
+        }
+        locationInput.setOnTouchListener { _, _ ->
+            locationInput.showDropDown()
+            false
+        }
         typeInput.setAdapter(
             ArrayAdapter(
                 requireContext(),
@@ -103,8 +127,18 @@ class ProviderListingFormFragment : Fragment(R.layout.fragment_provider_listing_
                 ListingInputOptions.roomTypeLabels
             )
         )
+        typeInput.threshold = 0
         typeInput.setRawInputType(InputType.TYPE_NULL)
         typeInput.setOnClickListener { typeInput.showDropDown() }
+        typeInput.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                typeInput.showDropDown()
+            }
+        }
+        typeInput.setOnTouchListener { _, _ ->
+            typeInput.showDropDown()
+            false
+        }
         availabilityInput.setRawInputType(InputType.TYPE_NULL)
         availabilityInput.setOnClickListener {
             showDatePicker { selectedDate ->
@@ -154,6 +188,18 @@ class ProviderListingFormFragment : Fragment(R.layout.fragment_provider_listing_
         viewModel.loadListing(listingId)
 
         saveButton.setOnClickListener {
+            clearInputErrors(
+                titleLayout,
+                descriptionLayout,
+                locationLayout,
+                typeLayout,
+                amenitiesLayout,
+                priceLayout,
+                depositLayout,
+                availabilityLayout
+            )
+            imageStatusText.setTextColor(getColorCompat(R.color.register_text_light))
+
             val title = titleInput.text.toString().trim()
             val description = descriptionInput.text.toString().trim()
             val priceStr = priceInput.text.toString().trim()
@@ -164,35 +210,61 @@ class ProviderListingFormFragment : Fragment(R.layout.fragment_provider_listing_
             val depositStr = depositInput.text.toString().trim()
             val availability = availabilityInput.text.toString().trim()
 
-            // Validate inputs
-            if (title.isBlank() || priceStr.isBlank() || location.isBlank() ||
-                depositStr.isBlank() || availability.isBlank()) {
-                Toast.makeText(requireContext(), "Basic fields are required", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-            if (type == null) {
-                Toast.makeText(requireContext(), R.string.listing_type_required, Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-            if (amenities.isBlank()) {
-                Toast.makeText(requireContext(), "Amenities are required", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-            if (viewModel.coverImage.value.isNullOrBlank()) {
-                Toast.makeText(requireContext(), R.string.listing_image_required, Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-
             val price = priceStr.toFloatOrNull()
             val deposit = depositStr.toIntOrNull()
 
+            var hasError = false
+            if (title.isBlank()) {
+                titleLayout.error = getString(R.string.listing_title_required)
+                hasError = true
+            }
+            if (description.isBlank()) {
+                descriptionLayout.error = getString(R.string.listing_description_required)
+                hasError = true
+            }
+            if (location.isBlank()) {
+                locationLayout.error = getString(R.string.listing_location_required)
+                hasError = true
+            }
+            if (type == null) {
+                typeLayout.error = getString(R.string.listing_type_required)
+                hasError = true
+            }
+            if (amenities.isBlank()) {
+                amenitiesLayout.error = getString(R.string.listing_amenities_required)
+                hasError = true
+            }
+            if (availability.isBlank()) {
+                availabilityLayout.error = getString(R.string.listing_availability_required)
+                hasError = true
+            }
             if (price == null || price <= 0) {
-                Toast.makeText(requireContext(), "Price must be a valid number > 0", Toast.LENGTH_SHORT).show()
+                priceLayout.error = getString(R.string.listing_price_required)
+                hasError = true
+            }
+            if (deposit == null || deposit <= 0) {
+                depositLayout.error = getString(R.string.listing_deposit_required)
+                hasError = true
+            }
+            if (viewModel.coverImage.value.isNullOrBlank()) {
+                imageStatusText.text = getString(R.string.listing_image_required)
+                imageStatusText.setTextColor(getColorCompat(R.color.error))
+                hasError = true
+            }
+            if (hasError) {
                 return@setOnClickListener
             }
 
-            if (deposit == null || deposit <= 0) {
-                Toast.makeText(requireContext(), "Deposit must be a valid number > 0", Toast.LENGTH_SHORT).show()
+            val resolvedType = type ?: run {
+                typeLayout.error = getString(R.string.listing_type_required)
+                return@setOnClickListener
+            }
+            val resolvedPrice = price ?: run {
+                priceLayout.error = getString(R.string.listing_price_required)
+                return@setOnClickListener
+            }
+            val resolvedDeposit = deposit ?: run {
+                depositLayout.error = getString(R.string.listing_deposit_required)
                 return@setOnClickListener
             }
 
@@ -201,18 +273,22 @@ class ProviderListingFormFragment : Fragment(R.layout.fragment_provider_listing_
                 providerId = providerId,
                 title = title,
                 description = description,
-                price = price,
+                price = resolvedPrice,
                 location = location,
-                type = type,
+                type = resolvedType,
                 amenities = amenities,
-                deposit = deposit,
+                deposit = resolvedDeposit,
                 availability = availability
             )
         }
+    }
 
-        backButton.setOnClickListener {
-            findNavController().popBackStack()
-        }
+    private fun clearInputErrors(vararg layouts: TextInputLayout) {
+        layouts.forEach { it.error = null }
+    }
+
+    private fun getColorCompat(colorRes: Int): Int {
+        return androidx.core.content.ContextCompat.getColor(requireContext(), colorRes)
     }
 
     private fun updateSelectedImageUi(path: String?) {
@@ -229,6 +305,7 @@ class ProviderListingFormFragment : Fragment(R.layout.fragment_provider_listing_
             } else {
                 getString(R.string.property_image_none)
             }
+            imageStatusText.setTextColor(getColorCompat(R.color.register_text_light))
         }
     }
 

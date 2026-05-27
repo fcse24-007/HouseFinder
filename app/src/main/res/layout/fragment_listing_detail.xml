@@ -6,6 +6,23 @@
     android:background="@color/register_cream"
     android:orientation="vertical">
 
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/primary"
+            app:navigationIcon="@drawable/ic_back"
+            app:navigationIconTint="@color/white"
+            app:title="Listing Details"
+            app:titleTextColor="@color/white" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -26,17 +43,8 @@
                     android:layout_height="match_parent"
                     android:background="#EEEEEE"
                     android:scaleType="centerCrop" />
-
-                <ImageButton
-                    android:id="@+id/btn_menu"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="16dp"
-                    android:background="@drawable/bg_role_pill_inactive"
-                    android:src="@drawable/ic_menu"
-                    app:tint="@color/register_text_dark" />
             </RelativeLayout>
+
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_detail_image_carousel"
@@ -146,10 +154,12 @@
                     android:textSize="15sp" />
 
             </LinearLayout>
+
         </LinearLayout>
     </ScrollView>
 
     <LinearLayout
+        android:id="@+id/layout_action_buttons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
@@ -174,4 +184,6 @@
             android:textAllCaps="false" />
     </LinearLayout>
 
+
 </LinearLayout>
+

@@ -6,7 +6,6 @@ import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -15,6 +14,8 @@ import androidx.navigation.fragment.navArgs
 import com.example.housefinder.R
 import com.example.housefinder.ui.common.SessionManager
 import com.example.housefinder.viewmodel.PaymentViewModel
+import com.google.android.material.textfield.TextInputLayout
+import androidx.core.widget.doAfterTextChanged
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -33,24 +34,35 @@ class PaymentFragment : Fragment(R.layout.fragment_payment) {
         val monthlyRentText = view.findViewById<TextView>(R.id.txt_summary_monthly_rent)
         val depositAmountText = view.findViewById<TextView>(R.id.txt_summary_deposit)
         val totalAmountText = view.findViewById<TextView>(R.id.txt_summary_total)
+        val cardholderLayout = view.findViewById<TextInputLayout>(R.id.input_cardholder_name)
+        val cardNumberLayout = view.findViewById<TextInputLayout>(R.id.input_card_number)
+        val cvvLayout = view.findViewById<TextInputLayout>(R.id.input_card_cvv)
         val cardholderInput = view.findViewById<EditText>(R.id.edt_cardholder_name)
-        val paymentAliasInput = view.findViewById<EditText>(R.id.edt_card_number)
-        val closeButton = view.findViewById<View>(R.id.btn_close_payment)
+        val cardNumberInput = view.findViewById<EditText>(R.id.edt_card_number)
+        val cvvInput = view.findViewById<EditText>(R.id.edt_card_cvv)
+        val toolbar = view.findViewById<com.google.android.material.appbar.MaterialToolbar>(R.id.toolbar)
         val cancelButton = view.findViewById<Button>(R.id.btn_cancel_payment)
         val payButton = view.findViewById<Button>(R.id.btn_confirm_payment)
 
-        closeButton.setOnClickListener { findNavController().popBackStack() }
+        toolbar.setNavigationOnClickListener { findNavController().popBackStack() }
         cancelButton.setOnClickListener { findNavController().popBackStack() }
+
+        cardholderInput.doAfterTextChanged { cardholderLayout.error = null }
+        cardNumberInput.doAfterTextChanged { cardNumberLayout.error = null }
+        cvvInput.doAfterTextChanged { cvvLayout.error = null }
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.listing.collectLatest { listing ->
-                if (listing != null) {
-                    listingNameText.text = listing.title
-                    monthlyRentText.text = getString(R.string.currency_p_value, listing.price.toInt())
-                    depositAmountText.text = getString(R.string.currency_p_value, listing.depositAmount)
-                    totalAmountText.text = getString(R.string.currency_p_value, listing.depositAmount)
-                    payButton.text = getString(R.string.btn_confirm_payment_amount, listing.depositAmount)
+                if (listing == null) {
+                    payButton.isEnabled = false
+                    return@collectLatest
                 }
+                listingNameText.text = listing.title
+                monthlyRentText.text = getString(R.string.currency_p_value, listing.price.toInt())
+                depositAmountText.text = getString(R.string.currency_p_value, listing.depositAmount)
+                totalAmountText.text = getString(R.string.currency_p_value, listing.depositAmount)
+                payButton.text = getString(R.string.btn_confirm_payment_amount, listing.depositAmount)
+                payButton.isEnabled = true
             }
         }
 
@@ -63,6 +75,11 @@ class PaymentFragment : Fragment(R.layout.fragment_payment) {
                     }
                     is PaymentViewModel.PaymentResult.Error -> {
                         showErrorDialog(result.message)
+                    }
+                    PaymentViewModel.PaymentResult.ListingMissing -> {
+                        showErrorDialog(getString(R.string.error_listing_not_found)) {
+                            findNavController().popBackStack()
+                        }
                     }
                 }
             }
@@ -77,36 +94,58 @@ class PaymentFragment : Fragment(R.layout.fragment_payment) {
                 return@setOnClickListener
             }
 
+            clearPaymentErrors(cardholderLayout, cardNumberLayout, cvvLayout)
+
             val cardholderName = cardholderInput.text.toString().trim()
-            val paymentAlias = paymentAliasInput.text.toString().trim().uppercase()
+            val cardNumber = cardNumberInput.text.toString().trim()
+            val cvv = cvvInput.text.toString().trim()
 
-            if (cardholderName.isBlank() || paymentAlias.isBlank()) {
-                Toast.makeText(requireContext(), R.string.error_payment_fields_required, Toast.LENGTH_SHORT).show()
+            if (cardholderName.isBlank()) {
+                cardholderLayout.error = getString(R.string.error_cardholder_required)
+            }
+            if (cardNumber.isBlank()) {
+                cardNumberLayout.error = getString(R.string.error_card_number_invalid)
+            }
+            if (cvv.isBlank()) {
+                cvvLayout.error = getString(R.string.error_cvv_invalid)
+            }
+            if (cardholderName.isBlank() || cardNumber.isBlank() || cvv.isBlank()) {
                 return@setOnClickListener
             }
 
-            if (!SUPPORTED_PAYMENT_ALIASES.contains(paymentAlias)) {
-                Toast.makeText(requireContext(), R.string.error_payment_alias_invalid, Toast.LENGTH_SHORT).show()
+            if (cardNumber.length != 16 || !cardNumber.all { it.isDigit() }) {
+                cardNumberLayout.error = getString(R.string.error_card_number_invalid)
                 return@setOnClickListener
             }
 
-            viewModel.processPayment(userId, listingId, paymentAlias)
+            if (cvv.length !in 3..4 || !cvv.all { it.isDigit() }) {
+                cvvLayout.error = getString(R.string.error_cvv_invalid)
+                return@setOnClickListener
+            }
+
+            viewModel.processPayment(userId, listingId, cardNumber)
         }
     }
 
-    private fun showErrorDialog(message: String) {
+    private fun showErrorDialog(message: String, onDismiss: (() -> Unit)? = null) {
         AlertDialog.Builder(requireContext())
             .setTitle("Payment Error")
             .setMessage(message)
-            .setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
+            .setPositiveButton("OK") { dialog, _ ->
+                dialog.dismiss()
+                onDismiss?.invoke()
+            }
             .show()
     }
 
-    companion object {
-        private val SUPPORTED_PAYMENT_ALIASES = setOf(
-            "TEST_VISA_01",
-            "TEST_MASTERCARD_01",
-            "TEST_BW_MOBILE_01"
-        )
+    private fun clearPaymentErrors(
+        cardholderLayout: TextInputLayout,
+        cardNumberLayout: TextInputLayout,
+        cvvLayout: TextInputLayout
+    ) {
+        cardholderLayout.error = null
+        cardNumberLayout.error = null
+        cvvLayout.error = null
     }
+
 }

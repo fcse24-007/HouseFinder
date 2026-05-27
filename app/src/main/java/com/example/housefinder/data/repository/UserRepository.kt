@@ -16,4 +16,6 @@ class UserRepository @Inject constructor(private val userDao: UserDao) {
     suspend fun getLatestProviderIdentifier(): String? = userDao.getLatestProviderIdentifier()
 
     suspend fun getById(id: Int): User? = userDao.getById(id)
+
+    suspend fun countByRole(role: String): Int = userDao.countByRole(role)
 }

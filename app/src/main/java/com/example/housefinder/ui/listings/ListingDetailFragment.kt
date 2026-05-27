@@ -19,6 +19,7 @@ import com.example.housefinder.db.entities.AppDatabase
 import com.example.housefinder.db.entities.conversationIdFor
 import com.example.housefinder.ui.common.HouseDateFormatter
 import com.example.housefinder.ui.common.ListingImageLoader
+import com.example.housefinder.ui.common.ListingInputOptions
 import com.example.housefinder.ui.common.SessionManager
 import com.example.housefinder.viewmodel.ListingDetailViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -48,7 +49,9 @@ class ListingDetailFragment : Fragment(R.layout.fragment_listing_detail) {
         val imageCarousel = view.findViewById<RecyclerView>(R.id.rv_detail_image_carousel)
         val reserveButton = view.findViewById<Button>(R.id.btn_reserve)
         val chatButton = view.findViewById<Button>(R.id.btn_chat_landlord)
-        val menuButton = view.findViewById<View>(R.id.btn_menu)
+        val actionButtonsLayout = view.findViewById<View>(R.id.layout_action_buttons)
+        val toolbar = view.findViewById<com.google.android.material.appbar.MaterialToolbar>(R.id.toolbar)
+        toolbar.setNavigationOnClickListener { findNavController().popBackStack() }
         val sessionManager = SessionManager(requireContext())
         val currentUserId = sessionManager.getUserId()
         if (currentUserId == null) {
@@ -58,6 +61,7 @@ class ListingDetailFragment : Fragment(R.layout.fragment_listing_detail) {
 
         var isProvider = false
         var providerIdForListing: Int? = null
+        var listingMissingHandled = false
         val carouselAdapter = ListingImageCarouselAdapter()
 
         imageCarousel.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
@@ -84,34 +88,45 @@ class ListingDetailFragment : Fragment(R.layout.fragment_listing_detail) {
                     .getById(currentUserId)
             }
             isProvider = sessionUser?.role == "PROVIDER"
-            chatButton.visibility = if (isProvider) View.GONE else View.VISIBLE
-            reserveButton.visibility = if (isProvider) View.GONE else View.VISIBLE
-        }
-
-        menuButton.setOnClickListener {
-            (activity as? com.example.housefinder.MainActivity)?.findViewById<androidx.drawerlayout.widget.DrawerLayout>(R.id.drawer_layout)?.openDrawer(androidx.core.view.GravityCompat.START)
+            actionButtonsLayout.visibility = if (isProvider) View.GONE else View.VISIBLE
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.listing.collectLatest { listing ->
-                if (listing == null) return@collectLatest
+            viewModel.uiState.collectLatest { state ->
+                when (state) {
+                    is ListingDetailViewModel.UiState.Loading -> Unit
+                    is ListingDetailViewModel.UiState.Missing -> {
+                        if (!listingMissingHandled) {
+                            listingMissingHandled = true
+                            showErrorDialog(getString(R.string.error_listing_not_found))
+                        }
+                    }
+                    is ListingDetailViewModel.UiState.Loaded -> {
+                        val listing = state.listing
+                        title.text = listing.title
+                        description.text = listing.description
+                        location.text = getString(R.string.location_value, listing.location)
+                        price.text = getString(R.string.rent_deposit_value, listing.price.toInt(), listing.depositAmount)
+                        type.text = getString(
+                            R.string.type_value,
+                            ListingInputOptions.toDisplayType(listing.type)
+                        )
+                        amenities.text = getString(R.string.amenities_value, listing.amenities)
+                        availability.text = getString(
+                            R.string.availability_from_value,
+                            HouseDateFormatter.toDisplayDate(listing.availabilityDate)
+                        )
+                        providerIdForListing = listing.providerId
 
-                title.text = listing.title
-                description.text = listing.description
-                location.text = getString(R.string.location_value, listing.location)
-                price.text = getString(R.string.rent_deposit_value, listing.price.toInt(), listing.depositAmount)
-                type.text = getString(R.string.type_value, listing.type)
-                amenities.text = getString(R.string.amenities_value, listing.amenities)
-                availability.text = getString(
-                    R.string.availability_from_value,
-                    HouseDateFormatter.toDisplayDate(listing.availabilityDate)
-                )
-                providerIdForListing = listing.providerId
-
-                // Update reserve button state based on listing availability
-                reserveButton.isEnabled = listing.status == "AVAILABLE"
-                if (listing.status != "AVAILABLE") {
-                    reserveButton.text = "Already Reserved"
+                        // Update reserve button state based on listing availability
+                        val isAvailable = listing.status == "AVAILABLE"
+                        reserveButton.isEnabled = isAvailable
+                        reserveButton.text = if (isAvailable) {
+                            getString(R.string.btn_reserve)
+                        } else {
+                            getString(R.string.listing_reserved_button)
+                        }
+                    }
                 }
             }
         }

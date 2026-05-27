@@ -4,31 +4,26 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/register_cream"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingTop="8dp"
+    android:paddingBottom="12dp">
 
-    <RelativeLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="64dp"
-        android:paddingHorizontal="24dp">
+        android:layout_height="wrap_content">
 
-        <ImageButton
-            android:id="@+id/btn_form_back"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_centerVertical="true"
-            android:background="@null"
-            android:src="@drawable/ic_back"
-            app:tint="@color/register_text_dark" />
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/primary"
+            app:navigationIcon="@drawable/ic_back"
+            app:navigationIconTint="@color/white"
+            app:title="@string/listing_details_title"
+            app:titleTextColor="@color/white" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:text="@string/listing_details_title"
-            android:textColor="@color/register_text_dark"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-    </RelativeLayout>
+    </com.google.android.material.appbar.AppBarLayout>
+
 
     <ScrollView
         android:layout_width="match_parent"
@@ -43,31 +38,36 @@
             android:padding="24dp">
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/input_listing_title"
                 style="@style/Widget.HouseFinder.TextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:hint="@string/listing_title"
                 app:startIconDrawable="@drawable/ic_person">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/edt_listing_title"
                     style="@style/Widget.HouseFinder.TextInputEditText"
                     android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:hint="@string/listing_title" />
+                    android:layout_height="wrap_content" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/input_listing_description"
                 style="@style/Widget.HouseFinder.TextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:hint="@string/description"
                 app:startIconDrawable="@drawable/ic_description">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/edt_description"
                     style="@style/Widget.HouseFinder.TextInputEditText"
                     android:layout_width="match_parent"
-                    android:layout_height="120dp"
-                    android:hint="@string/description" />
+                    android:layout_height="wrap_content"
+                    android:gravity="top"
+                    android:minLines="3" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
@@ -129,7 +129,7 @@
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btnUpload"
                     android:layout_width="match_parent"
-                    android:layout_height="56dp"
+                    android:layout_height="52dp"
                     android:layout_marginTop="16dp"
                     android:background="@drawable/rounded_button_outline"
                     android:text="@string/upload_property_image"
@@ -138,104 +138,114 @@
                     android:textSize="16sp" />
 
             <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.HouseFinder.TextInputLayout"
+                android:id="@+id/input_listing_location"
+                style="@style/Widget.HouseFinder.TextInputLayout.ExposedDropdown"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
+                android:hint="@string/location"
                 app:startIconDrawable="@drawable/ic_location">
 
                 <com.google.android.material.textfield.MaterialAutoCompleteTextView
                     android:id="@+id/edt_listing_location"
                     style="@style/Widget.HouseFinder.TextInputEditText"
                     android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:hint="@string/location" />
+                    android:layout_height="wrap_content"
+                    android:inputType="none" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.HouseFinder.TextInputLayout"
+                android:id="@+id/input_listing_type"
+                style="@style/Widget.HouseFinder.TextInputLayout.ExposedDropdown"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
+                android:hint="@string/listing_type_dropdown_hint"
                 app:startIconDrawable="@drawable/ic_home">
 
                 <com.google.android.material.textfield.MaterialAutoCompleteTextView
                     android:id="@+id/edt_listing_type"
                     style="@style/Widget.HouseFinder.TextInputEditText"
                     android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:hint="@string/listing_type_dropdown_hint" />
+                    android:layout_height="wrap_content"
+                    android:inputType="none" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/input_listing_amenities"
                 style="@style/Widget.HouseFinder.TextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
+                android:hint="@string/listing_amenities_hint"
                 app:startIconDrawable="@drawable/ic_description">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/edt_listing_amenities"
                     style="@style/Widget.HouseFinder.TextInputEditText"
                     android:layout_width="match_parent"
-                    android:layout_height="80dp"
-                    android:hint="@string/listing_amenities_hint" />
+                    android:layout_height="wrap_content"
+                    android:minLines="2" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/input_listing_price"
                 style="@style/Widget.HouseFinder.TextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
+                android:hint="@string/price_bwp"
                 app:startIconDrawable="@drawable/ic_card">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/edt_listing_price"
                     style="@style/Widget.HouseFinder.TextInputEditText"
                     android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:hint="@string/price_bwp"
+                    android:layout_height="wrap_content"
                     android:inputType="number" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/input_listing_deposit"
                 style="@style/Widget.HouseFinder.TextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
+                android:hint="@string/deposit_bwp"
                 app:startIconDrawable="@drawable/ic_card">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/edt_listing_deposit"
                     style="@style/Widget.HouseFinder.TextInputEditText"
                     android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:hint="@string/deposit_bwp"
+                    android:layout_height="wrap_content"
                     android:inputType="number" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/input_listing_availability"
                 style="@style/Widget.HouseFinder.TextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
+                android:hint="@string/available_date"
                 app:startIconDrawable="@drawable/ic_help">
 
                 <com.google.android.material.textfield.MaterialAutoCompleteTextView
                     android:id="@+id/edt_listing_availability"
                     style="@style/Widget.HouseFinder.TextInputEditText"
                     android:layout_width="match_parent"
-                    android:layout_height="60dp"
+                    android:layout_height="wrap_content"
                     android:focusable="false"
-                    android:hint="@string/available_date" />
+                    android:inputType="none" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_save_listing"
                 style="@style/Widget.HouseFinder.Button"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:layout_marginTop="32dp"
+                android:layout_height="52dp"
+                android:layout_marginTop="28dp"
                 android:text="@string/btn_save_listing" />
 
         </LinearLayout>

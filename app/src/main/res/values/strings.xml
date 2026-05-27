@@ -30,6 +30,8 @@
     <string name="availability_from_value">Available from: %1$s</string>
     <string name="rent_deposit_value">Rent: BWP %1$d | Deposit: BWP %2$d</string>
     <string name="reservation_reference_value">Reference: %1$s</string>
+    <string name="listing_reserved_button">Already Reserved</string>
+    <string name="error_listing_not_found">Listing not found</string>
 
     <!-- Validation & Error Messages -->
 
@@ -42,9 +44,16 @@
     <string name="filter_location">Location (Gaborone area)</string>
     <string name="filter_location_dropdown">Select location</string>
     <string name="filter_room_type">Select room type</string>
-    <string name="filter_availability_date">Available by (DD-MM-YYYY)</string>
+    <string name="filter_availability_date">Available from (DD-MM-YYYY)</string>
     <string name="filter_apply">Apply filters</string>
     <string name="filter_clear">Clear filters</string>
+    <string name="clear_all_filters">Clear all</string>
+    <string name="search_listings_hint">Search by title or location</string>
+    <string name="sort_by">Sort by</string>
+    <string name="sort_newest">Newest</string>
+    <string name="sort_price_low_high">Price (low to high)</string>
+    <string name="sort_price_high_low">Price (high to low)</string>
+    <string name="sort_distance">Distance to campus</string>
     <string name="filter_invalid_price">Enter a valid price</string>
     <string name="filter_invalid_price_min">Enter a valid minimum price (>= 0)</string>
     <string name="filter_invalid_price_max">Enter a valid maximum price (&gt;= 0)</string>
@@ -63,7 +72,7 @@
     <string name="hint_max_price">Max price</string>
     <string name="hint_location">Location</string>
     <string name="label_enable_alerts">Enable smart alerts</string>
-    <string name="label_preferred_type">Preferred type (EN_SUITE/SHARED/STUDIO/FLAT)</string>
+    <string name="label_preferred_type">Preferred type</string>
 
     <!-- Provider Dashboard -->
     <string name="pref_messg_show">Set your preferences to receive alerts for matching listings</string>
@@ -83,6 +92,7 @@
     <string name="app_brand_tagline">Find A Safe Place To Call Home!</string>
     <string name="nav_home">Home</string>
     <string name="nav_my_reservations">My Reservations</string>
+    <string name="nav_provider_reservations">Reservations</string>
     <string name="nav_preferences">Preferences</string>
     <string name="nav_chat">Chats</string>
     <string name="nav_help">Help</string>
@@ -95,26 +105,32 @@
     <string name="label_total_to_pay">Total to Pay:</string>
     <string name="payment_information">Payment Information</string>
     <string name="hint_cardholder_name">Cardholder Name</string>
-    <string name="hint_card_number">Card Number</string>
-    <string name="hint_payment_alias">Test payment alias (e.g. TEST_VISA_01)</string>
+    <string name="hint_card_number">Card number (16 digits)</string>
     <string name="hint_expiry">Expiry (MM/YY)</string>
     <string name="hint_cvv">CVV</string>
-    <string name="payment_terms_note">Simulation only. Use one of: TEST_VISA_01, TEST_MASTERCARD_01, TEST_BW_MOBILE_01.</string>
+    <string name="payment_terms_note">Simulation only. Use any 16-digit card number and a 3–4 digit CVV.</string>
     <string name="btn_confirm_payment_default">Confirm Payment</string>
     <string name="btn_confirm_payment_amount">Confirm Payment (P%1$d)</string>
     <string name="currency_p_value">P%1$d</string>
     <string name="close">Close</string>
     <string name="cancel">Cancel</string>
-    <string name="error_payment_fields_required">Please provide cardholder name and payment alias</string>
+    <string name="error_payment_fields_required">Please provide cardholder name, card number, and CVV</string>
     <string name="error_card_number_invalid">Card number must be exactly 16 digits</string>
-    <string name="error_payment_alias_invalid">Unsupported test payment alias</string>
+    <string name="error_cvv_invalid">CVV must be 3 or 4 digits</string>
+    <string name="error_cardholder_required">Cardholder name is required</string>
     <string name="selected_role_student">Selected Role: Student</string>
     <string name="selected_role_landlord">Selected Role: Landlord</string>
     <string name="title_my_reservations">My Reservations</string>
     <string name="my_reservations_subtitle">Track your confirmed and active bookings</string>
     <string name="empty_my_reservations">You do not have any reservations yet.</string>
+    <string name="title_provider_reservations">Student Reservations</string>
+    <string name="provider_reservations_subtitle">Track student bookings for your listings</string>
+    <string name="empty_provider_reservations">No student reservations yet.</string>
     <string name="reservation_status_value">Status: %1$s</string>
+    <string name="reservation_status_active">Active</string>
+    <string name="reservation_status_pending">Pending</string>
     <string name="reservation_details_value">%1$s • P%2$d/month • Provider: %3$s</string>
+    <string name="provider_reservation_student_value">%1$s • %2$s</string>
     <string name="reserved_at_value">Reserved: %1$s</string>
     <string name="btn_my_reservations">Go to My Reservations</string>
     <string name="register_role_prompt">Choose account type</string>
@@ -122,6 +138,8 @@
     <string name="nav_header_title">House Finder</string>
     <string name="nav_header_subtitle">Your perfect home awaits</string>
     <string name="listing_list_subtitle">Find your perfect room</string>
+    <string name="filters">Filters</string>
+    <string name="title_filters">Filters</string>
     <string name="listing_detail_placeholder_title">Cozy Student Room</string>
     <string name="listing_detail_placeholder_location">Gaborone West</string>
     <string name="listing_detail_overview_label">Overview</string>
@@ -132,16 +150,34 @@
     <string name="listing_detail_placeholder_rent_deposit">Rent: BWP 3,500 | Deposit: BWP 3,500</string>
     <string name="settings_notifications_title">Notifications</string>
     <string name="settings_notifications_toggle">Enable notifications</string>
+    <string name="settings_appearance_title">Appearance</string>
+    <string name="settings_dark_mode_toggle">Dark mode</string>
     <string name="listing_card_placeholder_title">Cozy Student Room</string>
     <string name="listing_card_placeholder_location">Gaborone West</string>
     <string name="listing_card_placeholder_price">BWP 3,500</string>
     <string name="listing_card_price_suffix">/mo</string>
+    <string name="listing_price_overlay">P%1$d/mo</string>
+    <string name="listing_distance_to_campus">%1$.1f km to campus</string>
+    <string name="listing_distance_placeholder">0.0 km to campus</string>
     <string name="listing_card_placeholder_type">EN_SUITE</string>
     <string name="listing_card_placeholder_availability_badge">Available 01-01-2024</string>
     <string name="listing_status_available">Available</string>
     <string name="listing_status_reserved">Reserved</string>
     <string name="listing_available_badge">Available %1$s</string>
     <string name="view_listing_details">View details</string>
+    <string name="empty_listings_title">No listings yet</string>
+    <string name="empty_listings_subtitle">Start searching to discover student-friendly stays.</string>
+    <string name="empty_listings_title_filtered">No matches found</string>
+    <string name="empty_listings_subtitle_filtered">Try clearing your filters or widening the range.</string>
+    <string name="empty_listings_illustration">Empty search illustration</string>
+    <string name="start_searching">Start searching</string>
+    <string name="empty_my_reservations_title">No reservations yet</string>
+    <string name="empty_my_reservations_subtitle">Once you book a place, it will show up here.</string>
+    <string name="empty_provider_reservations_title">No student reservations yet</string>
+    <string name="empty_provider_reservations_subtitle">New bookings will appear here.</string>
+    <string name="empty_reservations_illustration">Empty reservations illustration</string>
+    <string name="empty_provider_reservations_illustration">Empty provider reservations illustration</string>
+    <string name="view_dashboard">View dashboard</string>
     <string name="reservation_success_icon">✓</string>
     <string name="reservation_success_message">Your reservation has been successfully confirmed!</string>
     <string name="reservation_reference_label">Reference Number</string>
@@ -153,15 +189,31 @@
     <string name="receipt_amount_value">Amount Paid: P%1$d</string>
     <string name="receipt_method_value">Method: %1$s</string>
     <string name="receipt_paid_at_value">Paid At: %1$s</string>
+    <string name="title_receipt">Receipt</string>
+    <string name="receipt_detail_heading">Payment receipt</string>
+    <string name="receipt_reference_placeholder">Reference: --</string>
+    <string name="receipt_reference_value">Reference: %1$s</string>
+    <string name="receipt_listing_placeholder">Listing: --</string>
+    <string name="receipt_listing_value">Listing: %1$s</string>
     <string name="property_image">Property Image</string>
     <string name="upload_property_image">Upload Property Image</string>
     <string name="property_image_none">No image selected</string>
     <string name="property_image_selected">Selected image ready to upload</string>
     <string name="listing_image_required">Add at least one image before saving this listing</string>
     <string name="listing_type_required">Please select a room type</string>
+    <string name="listing_title_required">Listing title is required</string>
+    <string name="listing_location_required">Location is required</string>
+    <string name="listing_price_required">Price must be a valid number &gt; 0</string>
+    <string name="listing_deposit_required">Deposit must be a valid number &gt; 0</string>
+    <string name="listing_availability_required">Availability date is required</string>
+    <string name="listing_amenities_required">Amenities are required</string>
+    <string name="listing_description_required">Description is required</string>
     <string name="back">Back</string>
     <string name="send">Send</string>
     <string name="chat_button_label">Chat with Landlord</string>
+    <string name="chat_landlord_from_reservation">Chat landlord</string>
+    <string name="chat_student_from_reservation">Chat student</string>
+    <string name="view_receipt">View receipt</string>
     <string name="chat_list_subtitle">Your conversations with students and landlords</string>
     <string name="chat_empty">No conversations yet.</string>
     <string name="chat_message_hint">Type a message</string>
@@ -177,7 +229,7 @@
     <string name="help_answer_create_account">1. Click \'Create Account\' on the login screen\n2. Enter your full name and email address\n3. Set a secure password\n4. For students, provide your student ID\n5. Tap \'Sign Up\' to complete registration</string>
     <string name="help_section_browsing_filtering">Browsing &amp; Filtering</string>
     <string name="help_question_filter_listings">How do I filter listings?</string>
-    <string name="help_answer_filter_listings">You can filter listings by:\n• Price range (minimum and maximum)\n• Location\n• Property type\n• Availability date\n\nAdjust the filter fields and tap \'Apply\' to see results.</string>
+    <string name="help_answer_filter_listings">You can filter listings by:\n• Price range (minimum and maximum)\n• Location\n• Property type\n• Availability date\n\nTap \'Filters\' on the listings screen, adjust the fields, and tap \'Apply\'.</string>
     <string name="help_question_smart_alerts">What are Smart Alerts?</string>
     <string name="help_answer_smart_alerts">Smart Alerts notify you when new listings matching your saved preferences are posted. Save your preferred filters in the Preferences section to receive alerts.</string>
     <string name="help_section_reservations_payments">Reservations &amp; Payments</string>

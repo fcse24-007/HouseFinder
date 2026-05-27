@@ -31,19 +31,19 @@ class PaymentViewModel @Inject constructor(
 
     fun loadListing(listingId: Int) {
         viewModelScope.launch {
-            _listing.value = listingRepository.getByIdOnce(listingId)
+            val listing = listingRepository.getByIdOnce(listingId)
+            if (listing == null) {
+                _paymentResult.emit(PaymentResult.ListingMissing)
+                return@launch
+            }
+            _listing.value = listing
         }
     }
 
-    fun processPayment(userId: Int, listingId: Int, paymentAlias: String) {
+    fun processPayment(userId: Int, listingId: Int, cardNumber: String) {
         viewModelScope.launch {
             if (!BuildConfig.SIMULATED_PAYMENTS) {
                 _paymentResult.emit(PaymentResult.Error("Simulated payments are disabled in this build"))
-                return@launch
-            }
-
-            if (!SUPPORTED_PAYMENT_ALIASES.contains(paymentAlias.uppercase())) {
-                _paymentResult.emit(PaymentResult.Error("Unsupported test payment alias"))
                 return@launch
             }
 
@@ -57,7 +57,7 @@ class PaymentViewModel @Inject constructor(
                 val result = reservationRepository.createSimulatedReservation(
                     studentId = userId,
                     listingId = listingId,
-                    paymentAlias = paymentAlias
+                    cardLast4 = cardNumber.takeLast(4)
                 )
             ) {
                 is ReservationRepository.BookingResult.Success ->
@@ -78,13 +78,7 @@ class PaymentViewModel @Inject constructor(
     sealed class PaymentResult {
         data class Success(val referenceNumber: String) : PaymentResult()
         data class Error(val message: String) : PaymentResult()
+        object ListingMissing : PaymentResult()
     }
 
-    companion object {
-        private val SUPPORTED_PAYMENT_ALIASES = setOf(
-            "TEST_VISA_01",
-            "TEST_MASTERCARD_01",
-            "TEST_BW_MOBILE_01"
-        )
-    }
 }

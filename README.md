@@ -44,11 +44,3 @@ HouseFinder/
 - **data/** and **db/** – Data access, repositories, and database code
 - **worker/** – Background or scheduled jobs
 
-## License
-Specify your license here. (e.g., MIT, Apache 2.0)
-
-## Contributing
-Pull requests are welcome. Please open an issue first to discuss major changes.
-
----
-Feel free to update this README with more details as your project evolves!
